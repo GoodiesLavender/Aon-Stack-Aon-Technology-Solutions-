@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AonStack - AI & SaaS Solutions for Small Businesses</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <div class="logo">
+                    <i class="fas fa-layer-group"></i>
+                    <span>AonStack</span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#why-us">Why Us</a></li>
+                    <li><a href="#cta">Get Started</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">AI & SaaS Solutions Built for Growing Businesses</h1>
+                <p class="hero-subtitle">Empower your restaurant, online shop, or service business with AI-driven tools, automation, and enterprise-grade communication. All from one trusted partner.</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">
+                        Get Started Today
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-play-circle"></i>
+                        Watch Demo
+                    </button>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number">500+</span>
+                        <span class="stat-label">Businesses Served</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">99.9%</span>
+                        <span class="stat-label">Uptime SLA</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">Support</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <div class="section-header">
+                <h2>Comprehensive Solutions for Your Business</h2>
+                <p>Everything you need to scale faster, serve better, and work smarter</p>
+            </div>
+
+            <div class="services-grid">
+                <!-- Service 1 -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>AI Chatbots</h3>
+                    <p>Intelligent chatbots that handle customer inquiries 24/7, understand context, and provide instant support. Perfect for restaurants and e-commerce.</p>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> Multi-language support</li>
+                        <li><i class="fas fa-check"></i> Smart intent recognition</li>
+                        <li><i class="fas fa-check"></i> Seamless integration</li>
+                    </ul>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <h3>CRM Setup & Management</h3>
+                    <p>Organize customer relationships, track interactions, and boost sales with a CRM tailored to your business. Full setup and training included.</p>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> Customized workflows</li>
+                        <li><i class="fas fa-check"></i> Sales pipeline tracking</li>
+                        <li><i class="fas fa-check"></i> Data analytics</li>
+                    </ul>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-magic"></i>
+                    </div>
+                    <h3>Customer Automation</h3>
+                    <p>Automate workflows, follow-ups, and repetitive tasks. Save hours every week while improving customer experience and reducing errors.</p>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> Process automation</li>
+                        <li><i class="fas fa-check"></i> Trigger-based actions</li>
+                        <li><i class="fas fa-check"></i> Multi-tool integration</li>
+                    </ul>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3>AI Email Assistant</h3>
+                    <p>Draft, refine, and send better emails faster. Our AI assistant learns your tone and helps you compose professional communications in seconds.</p>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> Tone customization</li>
+                        <li><i class="fas fa-check"></i> Subject line optimization</li>
+                        <li><i class="fas fa-check"></i> Smart scheduling</li>
+                    </ul>
+                </div>
+
+                <!-- Service 5 -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Secure Business Communication</h3>
+                    <p>Enterprise-grade communication platform with end-to-end encryption, compliance certifications, and dedicated support for your peace of mind.</p>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> Bank-level encryption</li>
+                        <li><i class="fas fa-check"></i> Compliance ready</li>
+                        <li><i class="fas fa-check"></i> Team collaboration</li>
+                    </ul>
+                </div>
+
+                <!-- Service 6 -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-cube"></i>
+                    </div>
+                    <h3>Microsoft 365 & AI Tools Marketplace</h3>
+                    <p>Access curated AI tools and Microsoft 365 solutions through AppDirect. Get enterprise productivity with setup, training, and ongoing support.</p>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> Pre-vetted tools</li>
+                        <li><i class="fas fa-check"></i> Unified billing</li>
+                        <li><i class="fas fa-check"></i> Expert implementation</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section class="why-us" id="why-us">
+        <div class="container">
+            <div class="why-us-grid">
+                <div class="why-us-content">
+                    <h2>Why Choose AonStack?</h2>
+                    <p>We're not just another SaaS provider. We're your growth partner, focused on making technology simple and accessible for small businesses.</p>
+                    
+                    <div class="why-us-features">
+                        <div class="why-feature">
+                            <div class="why-icon">
+                                <i class="fas fa-target"></i>
+                            </div>
+                            <div>
+                                <h4>Built for Small Business</h4>
+                                <p>Designed specifically for restaurants, e-commerce, and service businesses. We understand your unique challenges.</p>
+                            </div>
+                        </div>
+
+                        <div class="why-feature">
+                            <div class="why-icon">
+                                <i class="fas fa-handshake"></i>
+                            </div>
+                            <div>
+                                <h4>Expert Onboarding & Support</h4>
+                                <p>Dedicated support team to get you set up right, with training and ongoing guidance at every step.</p>
+                            </div>
+                        </div>
+
+                        <div class="why-feature">
+                            <div class="why-icon">
+                                <i class="fas fa-rocket"></i>
+                            </div>
+                            <div>
+                                <h4>All-in-One Platform</h4>
+                                <p>Everything you need in one place—no jumping between tools. Simpler workflow, better results.</p>
+                            </div>
+                        </div>
+
+                        <div class="why-feature">
+                            <div class="why-icon">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                            <div>
+                                <h4>Security First</h4>
+                                <p>Enterprise-grade security and compliance. Your customer data is protected with industry-leading standards.</p>
+                            </div>
+                        </div>
+
+                        <div class="why-feature">
+                            <div class="why-icon">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div>
+                                <h4>Transparent Pricing</h4>
+                                <p>No surprises. Clear pricing models that scale with your business, from startup to enterprise.</p>
+                            </div>
+                        </div>
+
+                        <div class="why-feature">
+                            <div class="why-icon">
+                                <i class="fas fa-zap"></i>
+                            </div>
+                            <div>
+                                <h4>AI-Powered Innovation</h4>
+                                <p>Cutting-edge AI technology that grows with your business and evolves to meet your needs.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="why-us-visual">
+                    <div class="visual-card">
+                        <div class="visual-item">
+                            <span class="badge">Verified</span>
+                            <h5>Trusted by Industry Leaders</h5>
+                            <p>Thousands of businesses across restaurants, retail, and services rely on AonStack daily.</p>
+                        </div>
+                        <div class="visual-item">
+                            <span class="badge">Certified</span>
+                            <h5>Compliance & Certifications</h5>
+                            <p>SOC 2 Type II, GDPR compliant, and certified for healthcare and financial services.</p>
+                        </div>
+                        <div class="visual-item">
+                            <span class="badge">Award</span>
+                            <h5>Industry Recognition</h5>
+                            <p>Named Best SaaS Platform for Small Business 2024-2025.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta" id="cta">
+        <div class="container">
+            <div class="cta-content">
+                <div class="cta-main">
+                    <h2>Ready to Transform Your Business?</h2>
+                    <p>Join hundreds of growing businesses that have already scaled with AonStack.</p>
+                    <div class="cta-buttons">
+                        <button class="btn btn-primary" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">
+                            Schedule a Free Demo
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                        <p class="cta-subtext">No credit card required. Setup takes 15 minutes.</p>
+                    </div>
+                </div>
+                <div class="cta-cards">
+                    <div class="cta-card">
+                        <h5>Free Trial</h5>
+                        <p>14 days full access</p>
+                    </div>
+                    <div class="cta-card">
+                        <h5>Free Onboarding</h5>
+                        <p>Expert setup included</p>
+                    </div>
+                    <div class="cta-card">
+                        <h5>Money-Back Guarantee</h5>
+                        <p>30 days, no questions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="contact-wrapper">
+                <div class="contact-info">
+                    <h2>Get in Touch</h2>
+                    <p>Have questions? Our team is here to help. Reach out and we'll get back to you within 2 hours.</p>
+                    
+                    <div class="contact-methods">
+                        <div class="contact-method">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <h5>Email</h5>
+                                <p>hello@aonstack.com</p>
+                            </div>
+                        </div>
+                        <div class="contact-method">
+                            <i class="fas fa-phone"></i>
+                            <div>
+                                <h5>Phone</h5>
+                                <p>+1 (555) 123-4567</p>
+                            </div>
+                        </div>
+                        <div class="contact-method">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <h5>Office</h5>
+                                <p>San Francisco, CA 94105</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-social">
+                        <h6>Follow Us</h6>
+                        <div class="social-links">
+                            <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <form class="contact-form" id="contactForm">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="company">Company Name</label>
+                        <input type="text" id="company" name="company" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="business">Business Type</label>
+                        <select id="business" name="business" required>
+                            <option value="">Select your business type</option>
+                            <option value="restaurant">Restaurant</option>
+                            <option value="ecommerce">Online Business</option>
+                            <option value="service">Service Business</option>
+                            <option value="saas">SaaS / Tech</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                    <p class="form-note">We'll respond within 2 hours during business hours.</p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-layer-group"></i>
+                        <span>AonStack</span>
+                    </div>
+                    <p>AI & SaaS solutions for small businesses that want to scale faster and work smarter.</p>
+                </div>
+                <div class="footer-section">
+                    <h5>Product</h5>
+                    <ul>
+                        <li><a href="#services">Services</a></li>
+                        <li><a href="#why-us">Why Choose Us</a></li>
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">Integrations</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h5>Company</h5>
+                    <ul>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Press</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h5>Legal</h5>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Security</a></li>
+                        <li><a href="#">Compliance</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 AonStack. All rights reserved.</p>
+                <p>Trusted by 500+ businesses | 99.9% Uptime | 24/7 Support</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
