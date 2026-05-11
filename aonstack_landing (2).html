@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AonStack — AI & SaaS Solutions</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,700;12..96,800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+/* ─── TOKENS ─── */
+:root {
+  --navy:   #04091a;
+  --navy2:  #080f24;
+  --navy3:  #0d1830;
+  --card:   #0f1e38;
+  --card2:  #112040;
+  --border: rgba(59,130,246,.12);
+  --border2:rgba(255,255,255,.06);
+  --blue:   #3b7dff;
+  --blue2:  #2563eb;
+  --glow:   rgba(59,125,255,.18);
+  --cyan:   #38bdf8;
+  --white:  #f0f4ff;
+  --muted:  #7a8aaa;
+  --fh: 'Bricolage Grotesque', sans-serif;
+  --fb: 'DM Sans', sans-serif;
+  --fm: 'DM Mono', monospace;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--navy);color:var(--white);font-family:var(--fb);overflow-x:hidden;line-height:1.6}
+
+/* ─── BACKGROUND GRID ─── */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    linear-gradient(rgba(59,125,255,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(59,125,255,.04) 1px,transparent 1px);
+  background-size:60px 60px;
+}
+
+/* ─── NOISE TEXTURE ─── */
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.025;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+}
+
+.container{max-width:1100px;margin:0 auto;padding:0 1.5rem;position:relative;z-index:1}
+
+/* ─── NAVBAR ─── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:.9rem 0;
+  background:rgba(4,9,26,.85);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border2);
+}
+.nav-inner{display:flex;align-items:center;gap:2rem}
+.nav-logo{
+  font-family:var(--fh);font-size:1.2rem;font-weight:800;letter-spacing:-.03em;
+  color:var(--white);display:flex;align-items:center;gap:8px;text-decoration:none
+}
+.nav-logo-icon{
+  width:30px;height:30px;background:var(--blue);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;font-size:13px
+}
+.nav-links{display:flex;gap:1.75rem;list-style:none;margin-left:auto}
+.nav-links a{font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;transition:color .15s}
+.nav-links a:hover{color:var(--white)}
+.nav-cta{
+  font-size:13px;font-weight:600;padding:8px 18px;
+  background:var(--blue);color:#fff;border-radius:8px;
+  text-decoration:none;transition:opacity .15s;white-space:nowrap
+}
+.nav-cta:hover{opacity:.85}
+.hamburger{display:none;background:none;border:1px solid var(--border2);color:var(--white);padding:7px 10px;border-radius:7px;cursor:pointer;font-size:14px}
+
+@media(max-width:680px){
+  .nav-links{display:none}
+  .nav-links.open{display:flex;flex-direction:column;position:fixed;top:58px;left:0;right:0;background:var(--navy2);border-bottom:1px solid var(--border2);padding:1rem 1.5rem;gap:1rem;z-index:99}
+  .hamburger{display:block}
+  .nav-cta{display:none}
+}
+
+/* ─── HERO ─── */
+.hero{
+  min-height:100vh;display:flex;align-items:center;
+  padding:7rem 0 5rem;position:relative;overflow:hidden
+}
+.hero-glow{
+  position:absolute;top:-20%;left:50%;transform:translateX(-50%);
+  width:700px;height:600px;
+  background:radial-gradient(ellipse at center,rgba(59,125,255,.15) 0%,transparent 65%);
+  pointer-events:none
+}
+.hero-glow2{
+  position:absolute;bottom:-10%;right:-10%;
+  width:400px;height:400px;
+  background:radial-gradient(ellipse,rgba(56,189,248,.07) 0%,transparent 65%);
+  pointer-events:none
+}
+.hero-content{text-align:center;max-width:780px;margin:0 auto}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:7px;
+  font-family:var(--fm);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--blue);background:rgba(59,125,255,.1);border:1px solid rgba(59,125,255,.25);
+  padding:5px 14px;border-radius:100px;margin-bottom:1.5rem
+}
+.hero-eyebrow span{width:6px;height:6px;background:var(--blue);border-radius:50%;animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.3)}}
+h1{
+  font-family:var(--fh);font-size:clamp(2.4rem,6vw,4.2rem);font-weight:800;
+  line-height:1.05;letter-spacing:-.04em;margin-bottom:1.25rem
+}
+h1 em{font-style:normal;color:transparent;background:linear-gradient(135deg,#5b9aff,#38bdf8);-webkit-background-clip:text;background-clip:text}
+.hero-sub{font-size:clamp(15px,2vw,17px);color:var(--muted);max-width:560px;margin:0 auto 2.5rem;line-height:1.75}
+.hero-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:3.5rem}
+.btn-primary{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:13px 26px;background:var(--blue);color:#fff;
+  font-family:var(--fb);font-size:14px;font-weight:600;
+  border-radius:10px;border:none;cursor:pointer;text-decoration:none;
+  transition:opacity .15s,transform .1s
+}
+.btn-primary:hover{opacity:.88}
+.btn-primary:active{transform:scale(.99)}
+.btn-secondary{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:12px 24px;background:transparent;color:var(--white);
+  font-family:var(--fb);font-size:14px;font-weight:500;
+  border:1px solid var(--border2);border-radius:10px;cursor:pointer;
+  text-decoration:none;transition:border-color .15s,background .15s
+}
+.btn-secondary:hover{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.15)}
+.hero-stats{display:flex;gap:2px;justify-content:center;flex-wrap:wrap}
+.stat-card{
+  padding:16px 28px;background:var(--card);border:1px solid var(--border2);
+  text-align:center;first-child{border-radius:10px 0 0 10px}
+}
+.stat-card:first-child{border-radius:10px 0 0 10px}
+.stat-card:last-child{border-radius:0 10px 10px 0}
+.stat-num{font-family:var(--fh);font-size:1.6rem;font-weight:800;letter-spacing:-.04em;color:var(--white)}
+.stat-lbl{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* ─── TRUST BAR ─── */
+.trust-bar{padding:1.5rem 0;border-top:1px solid var(--border2);border-bottom:1px solid var(--border2);background:var(--navy2)}
+.trust-inner{display:flex;align-items:center;gap:2rem;flex-wrap:wrap;justify-content:center}
+.trust-item{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:500;color:var(--muted)}
+.trust-item i{color:var(--blue);font-size:14px}
+.trust-divider{width:1px;height:16px;background:var(--border2)}
+@media(max-width:480px){.trust-divider{display:none}}
+
+/* ─── SECTION HEADER ─── */
+.section-header{text-align:center;margin-bottom:3.5rem}
+.section-label{
+  display:inline-block;font-family:var(--fm);font-size:11px;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--blue);
+  background:rgba(59,125,255,.08);border:1px solid rgba(59,125,255,.2);
+  padding:4px 12px;border-radius:100px;margin-bottom:1rem
+}
+.section-title{font-family:var(--fh);font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:800;letter-spacing:-.04em;line-height:1.1;margin-bottom:.75rem}
+.section-sub{font-size:15px;color:var(--muted);max-width:480px;margin:0 auto;line-height:1.7}
+
+/* ─── SERVICES ─── */
+.services{padding:6rem 0;background:var(--navy)}
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;border:1px solid var(--border2);border-radius:16px;overflow:hidden}
+@media(max-width:860px){.services-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.services-grid{grid-template-columns:1fr}}
+.svc-card{
+  background:var(--card);padding:2rem;
+  transition:background .2s;cursor:default;
+  position:relative;overflow:hidden
+}
+.svc-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--blue),transparent);
+  opacity:0;transition:opacity .2s
+}
+.svc-card:hover{background:var(--card2)}
+.svc-card:hover::before{opacity:1}
+.svc-icon{
+  width:42px;height:42px;border-radius:10px;
+  background:rgba(59,125,255,.12);border:1px solid rgba(59,125,255,.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;color:var(--blue);margin-bottom:1rem
+}
+.svc-title{font-family:var(--fh);font-size:1rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.5rem}
+.svc-desc{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:1rem}
+.svc-tags{display:flex;flex-wrap:wrap;gap:5px}
+.tag{
+  font-family:var(--fm);font-size:10px;font-weight:500;letter-spacing:.05em;
+  padding:3px 9px;background:rgba(255,255,255,.04);border:1px solid var(--border2);
+  border-radius:100px;color:var(--muted)
+}
+
+/* ─── WHY US ─── */
+.why{padding:6rem 0;background:var(--navy2)}
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+@media(max-width:720px){.why-grid{grid-template-columns:1fr}}
+.why-content h2{font-family:var(--fh);font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;letter-spacing:-.04em;line-height:1.15;margin-bottom:1rem}
+.why-content h2 em{font-style:normal;color:var(--blue)}
+.why-content p{font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:1.75rem}
+.why-list{display:flex;flex-direction:column;gap:.8rem}
+.why-item{display:flex;gap:10px;align-items:flex-start;font-size:13px}
+.why-check{width:20px;height:20px;border-radius:50%;background:rgba(59,125,255,.15);border:1px solid rgba(59,125,255,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;color:var(--blue);margin-top:1px}
+.why-item-text strong{display:block;font-weight:600;color:var(--white);font-size:13px;margin-bottom:1px}
+.why-item-text span{color:var(--muted);font-size:12px}
+.why-visual{display:flex;flex-direction:column;gap:10px}
+.metric-card{
+  background:var(--card);border:1px solid var(--border2);border-radius:12px;
+  padding:1.1rem 1.25rem;display:flex;align-items:center;gap:14px
+}
+.metric-icon{width:40px;height:40px;border-radius:9px;background:rgba(59,125,255,.1);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.metric-num{font-family:var(--fh);font-size:1.5rem;font-weight:800;letter-spacing:-.04em;line-height:1}
+.metric-lbl{font-size:12px;color:var(--muted);margin-top:2px}
+.metric-bar{height:3px;background:var(--border2);border-radius:100px;margin-top:8px;overflow:hidden}
+.metric-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));border-radius:100px;animation:fillbar 1.5s ease-out forwards}
+@keyframes fillbar{from{width:0}}
+
+/* ─── CTA BAND ─── */
+.cta-band{
+  padding:5rem 0;background:var(--navy3);
+  border-top:1px solid var(--border2);border-bottom:1px solid var(--border2);
+  position:relative;overflow:hidden
+}
+.cta-band::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at center,rgba(59,125,255,.1) 0%,transparent 65%);
+  pointer-events:none
+}
+.cta-inner{text-align:center;max-width:600px;margin:0 auto}
+.cta-inner h2{font-family:var(--fh);font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;letter-spacing:-.04em;margin-bottom:.75rem}
+.cta-inner p{font-size:15px;color:var(--muted);margin-bottom:2rem;line-height:1.7}
+.cta-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:1.5rem}
+.chip{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);padding:5px 13px;background:rgba(255,255,255,.03);border:1px solid var(--border2);border-radius:100px}
+.chip i{color:var(--blue);font-size:11px}
+
+/* ─── CONTACT ─── */
+.contact-section{padding:6rem 0;background:var(--navy)}
+.contact-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:3.5rem;align-items:start}
+@media(max-width:720px){.contact-grid{grid-template-columns:1fr}}
+.contact-info h2{font-family:var(--fh);font-size:clamp(1.5rem,3vw,2rem);font-weight:800;letter-spacing:-.04em;margin-bottom:.75rem}
+.contact-info p{font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:1.75rem}
+.contact-methods{display:flex;flex-direction:column;gap:.8rem;margin-bottom:1.75rem}
+.c-method{display:flex;align-items:center;gap:12px;font-size:13px}
+.c-method-icon{width:36px;height:36px;border-radius:8px;background:rgba(59,125,255,.1);border:1px solid rgba(59,125,255,.15);display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:14px;flex-shrink:0}
+.c-method-text strong{display:block;color:var(--white);font-size:12px;margin-bottom:1px}
+.c-method-text span{color:var(--muted);font-size:12px}
+.social-row{display:flex;gap:8px}
+.soc-btn{
+  width:36px;height:36px;border-radius:8px;
+  background:rgba(255,255,255,.04);border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--muted);font-size:14px;text-decoration:none;
+  transition:color .15s,border-color .15s,background .15s
+}
+.soc-btn:hover{color:var(--white);background:rgba(59,125,255,.1);border-color:rgba(59,125,255,.3)}
+
+/* contact form */
+.contact-form{display:flex;flex-direction:column;gap:.85rem}
+.cf-row{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
+@media(max-width:440px){.cf-row{grid-template-columns:1fr}}
+.cf-label{font-size:12px;font-weight:500;color:var(--muted);display:block;margin-bottom:.35rem}
+.cf-input,.cf-select,.cf-textarea{
+  width:100%;background:var(--card);border:1px solid var(--border2);
+  color:var(--white);font-family:var(--fb);font-size:13px;padding:10px 13px;border-radius:9px;
+  outline:none;transition:border-color .15s,box-shadow .15s;-webkit-appearance:none
+}
+.cf-input::placeholder,.cf-textarea::placeholder{color:var(--muted)}
+.cf-input:focus,.cf-select:focus,.cf-textarea:focus{
+  border-color:rgba(59,125,255,.5);
+  box-shadow:0 0 0 3px rgba(59,125,255,.1)
+}
+.cf-select option{background:var(--navy3)}
+.cf-textarea{resize:vertical;min-height:100px;line-height:1.6}
+
+/* ─── FOOTER ─── */
+footer{background:var(--navy2);border-top:1px solid var(--border2);padding:3rem 0 1.5rem}
+.footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:2rem;margin-bottom:2.5rem}
+@media(max-width:720px){.footer-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:440px){.footer-grid{grid-template-columns:1fr}}
+.footer-logo{font-family:var(--fh);font-size:1.1rem;font-weight:800;letter-spacing:-.03em;margin-bottom:.6rem;display:flex;align-items:center;gap:7px}
+.footer-logo-icon{width:26px;height:26px;background:var(--blue);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px}
+.footer-desc{font-size:12px;color:var(--muted);line-height:1.7;max-width:220px}
+.footer-col h5{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--white);margin-bottom:.85rem}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:.5rem}
+.footer-col a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .15s}
+.footer-col a:hover{color:var(--white)}
+.footer-bottom{border-top:1px solid var(--border2);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
+.footer-bottom p{font-size:12px;color:var(--muted)}
+
+/* ─── PRICING SECTION ─── */
+.pricing{padding:6rem 0;background:var(--navy3);border-top:1px solid var(--border2);border-bottom:1px solid var(--border2)}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:start}
+@media(max-width:900px){.pricing-grid{grid-template-columns:1fr}}
+.price-card{
+  background:var(--card);border:1px solid var(--border2);border-radius:16px;
+  padding:2rem 1.75rem;display:flex;flex-direction:column;
+  position:relative;transition:border-color .2s,background .2s;
+}
+.price-card:hover{background:var(--card2);border-color:rgba(59,125,255,.25)}
+.price-card.popular{
+  border-color:rgba(59,125,255,.5);
+  background:rgba(59,125,255,.05);
+  box-shadow:0 0 0 1px rgba(59,125,255,.2),0 8px 32px rgba(59,125,255,.1);
+}
+.price-card.popular::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--blue),var(--cyan));
+  border-radius:16px 16px 0 0;
+}
+.price-badge-row{min-height:26px;margin-bottom:.85rem}
+.popular-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-family:var(--fm);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:4px 12px;border-radius:100px;background:var(--blue);color:#fff;
+}
+.popular-badge i{font-size:9px}
+.price-icon{
+  width:42px;height:42px;border-radius:10px;
+  background:rgba(59,125,255,.12);border:1px solid rgba(59,125,255,.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;color:var(--blue);margin-bottom:1rem;
+}
+.price-card.popular .price-icon{background:rgba(59,125,255,.2);border-color:rgba(59,125,255,.4)}
+.price-tier{font-family:var(--fh);font-size:1.1rem;font-weight:800;letter-spacing:-.03em;margin-bottom:.3rem}
+.price-desc{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:.85rem}
+.price-bestfor{
+  font-size:12px;color:var(--muted);
+  background:rgba(255,255,255,.03);border:1px solid var(--border2);
+  border-radius:8px;padding:8px 12px;margin-bottom:1.25rem;line-height:1.55;
+}
+.price-bestfor strong{color:var(--white);display:block;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:3px}
+.price-amount{margin-bottom:1.25rem;padding-bottom:1.25rem;border-bottom:1px solid var(--border2)}
+.price-main{font-family:var(--fh);font-size:1.65rem;font-weight:800;letter-spacing:-.04em;line-height:1.1}
+.price-card.popular .price-main{color:transparent;background:linear-gradient(135deg,#5b9aff,var(--cyan));-webkit-background-clip:text;background-clip:text}
+.price-sub{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.5}
+.price-support-tag{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:11px;font-weight:600;margin-top:8px;
+  padding:3px 10px;border-radius:100px;
+  background:rgba(59,125,255,.08);color:#8ab4ff;border:1px solid rgba(59,125,255,.18);
+}
+.price-support-tag i{font-size:10px}
+.price-features-label{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:.65rem}
+.price-features{list-style:none;display:flex;flex-direction:column;gap:.55rem;margin-bottom:1.5rem;flex:1}
+.price-features li{display:flex;align-items:flex-start;gap:9px;font-size:13px;color:#b8c8e0;line-height:1.5}
+.price-features li i{color:var(--blue);font-size:11px;flex-shrink:0;margin-top:3px}
+.price-card.popular .price-features li i{color:var(--cyan)}
+.price-addon-note{
+  display:flex;align-items:flex-start;gap:8px;
+  font-size:12px;color:var(--muted);
+  background:rgba(56,189,248,.05);border:1px solid rgba(56,189,248,.15);
+  border-radius:8px;padding:9px 12px;margin-bottom:1.25rem;line-height:1.55;
+}
+.price-addon-note i{color:var(--cyan);flex-shrink:0;margin-top:2px;font-size:12px}
+.price-cta{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 20px;border-radius:10px;
+  font-family:var(--fb);font-size:13px;font-weight:600;
+  text-decoration:none;border:none;cursor:pointer;
+  transition:opacity .15s,transform .1s;margin-top:auto;
+}
+.price-cta:active{transform:scale(.99)}
+.cta-solid{background:var(--blue);color:#fff}
+.cta-solid:hover{opacity:.88}
+.cta-outline{background:transparent;color:var(--white);border:1px solid var(--border2)}
+.cta-outline:hover{background:rgba(59,125,255,.07);border-color:rgba(59,125,255,.35);color:var(--white)}
+.pricing-notes{
+  margin-top:2.5rem;background:var(--card);
+  border:1px solid var(--border2);border-radius:14px;padding:1.75rem 2rem;
+}
+.pricing-notes-title{
+  font-family:var(--fh);font-size:.95rem;font-weight:800;letter-spacing:-.02em;
+  margin-bottom:1.1rem;display:flex;align-items:center;gap:8px;color:var(--white);
+}
+.pricing-notes-title i{color:var(--blue)}
+.notes-grid{display:grid;grid-template-columns:1fr 1fr;gap:.55rem .65rem}
+@media(max-width:640px){.notes-grid{grid-template-columns:1fr}}
+.note-item{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--muted);line-height:1.65}
+.note-item i{color:var(--muted);flex-shrink:0;margin-top:3px;font-size:11px}
+.pricing-footer-note{margin-top:1.75rem;text-align:center;font-size:13px;color:var(--muted);line-height:1.75}
+.pricing-footer-note strong{color:var(--white)}
+
+/* ─── TESTIMONIALS ─── */
+.testimonials{padding:6rem 0;background:var(--navy)}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border2);border:1px solid var(--border2);border-radius:16px;overflow:hidden}
+@media(max-width:720px){.testi-grid{grid-template-columns:1fr}}
+.testi-card{background:var(--card);padding:2rem;display:flex;flex-direction:column;gap:1rem;transition:background .2s}
+.testi-card:hover{background:var(--card2)}
+.testi-stars{display:flex;gap:3px;color:var(--blue);font-size:14px}
+.testi-quote{font-size:14px;color:var(--muted);line-height:1.75;flex:1;font-style:italic}
+.testi-author{display:flex;align-items:center;gap:10px;padding-top:.75rem;border-top:1px solid var(--border2)}
+.testi-avatar{width:36px;height:36px;border-radius:50%;background:rgba(59,125,255,.15);border:1px solid rgba(59,125,255,.2);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--blue);flex-shrink:0}
+.testi-name{font-size:13px;font-weight:600;color:var(--muted)}
+.testi-role{font-size:11px;color:var(--muted)}
+.testi-note{text-align:center;margin-top:1.5rem;font-size:13px;color:var(--muted)}
+.testi-note strong{color:var(--white)}
+/* ─── AI CHAT WIDGET ─── */
+#chat-bubble{
+  position:fixed;bottom:24px;right:24px;z-index:200;
+  width:52px;height:52px;background:var(--blue);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:20px;cursor:pointer;box-shadow:0 4px 24px rgba(59,125,255,.45);
+  transition:transform .2s,box-shadow .2s;border:none;color:#fff
+}
+#chat-bubble:hover{transform:scale(1.08);box-shadow:0 6px 32px rgba(59,125,255,.55)}
+.chat-notif{
+  position:absolute;top:-3px;right:-3px;width:16px;height:16px;
+  background:#ef4444;border-radius:50%;border:2px solid var(--navy);
+  font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;color:#fff
+}
+#chat-window{
+  position:fixed;bottom:88px;right:24px;z-index:200;
+  width:360px;max-height:520px;
+  background:var(--navy2);border:1px solid var(--border2);border-radius:18px;
+  display:none;flex-direction:column;overflow:hidden;
+  box-shadow:0 24px 60px rgba(0,0,0,.5),0 0 0 1px rgba(59,125,255,.1);
+  animation:slideUp .2s ease
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media(max-width:420px){#chat-window{width:calc(100vw - 32px);right:16px}}
+.chat-header{
+  display:flex;align-items:center;gap:10px;
+  padding:.85rem 1.1rem;border-bottom:1px solid var(--border2);
+  background:var(--navy3)
+}
+.chat-avatar{
+  width:34px;height:34px;border-radius:50%;
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+  display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0
+}
+.chat-hname{font-size:13px;font-weight:700;font-family:var(--fh)}
+.chat-hstatus{font-size:11px;color:#22c55e;display:flex;align-items:center;gap:4px}
+.chat-hstatus::before{content:'';width:5px;height:5px;background:#22c55e;border-radius:50%}
+.chat-close{margin-left:auto;background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;transition:color .15s}
+.chat-close:hover{color:var(--white)}
+.chat-msgs{flex:1;overflow-y:auto;padding:.85rem;display:flex;flex-direction:column;gap:10px;max-height:340px}
+.msg-row{display:flex;gap:7px;animation:fadeMsg .2s ease}
+@keyframes fadeMsg{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.msg-row.user{flex-direction:row-reverse}
+.msg-av{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:2px}
+.msg-av.user{background:rgba(255,255,255,.1)}
+.msg-bub{padding:9px 13px;border-radius:12px;font-size:13px;line-height:1.6;max-width:82%}
+.ai .msg-bub{background:var(--card);border:1px solid var(--border2);border-bottom-left-radius:4px}
+.user .msg-bub{background:var(--blue);color:#fff;border-bottom-right-radius:4px}
+.typing{display:flex;gap:4px;padding:10px 13px;background:var(--card);border:1px solid var(--border2);border-radius:12px;border-bottom-left-radius:4px;width:fit-content}
+.typing span{width:5px;height:5px;background:var(--muted);border-radius:50%;animation:bounce .9s infinite}
+.typing span:nth-child(2){animation-delay:.15s}
+.typing span:nth-child(3){animation-delay:.3s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-4px)}}
+.quick-chips{display:flex;flex-direction:column;gap:5px;margin-top:4px}
+.quick-chip{
+  font-size:12px;padding:6px 11px;
+  background:transparent;border:1px solid var(--border2);
+  border-radius:8px;color:var(--muted);cursor:pointer;text-align:left;
+  transition:all .15s
+}
+.quick-chip:hover{background:rgba(59,125,255,.1);border-color:rgba(59,125,255,.3);color:var(--white)}
+.chat-input-row{
+  padding:.7rem .85rem;border-top:1px solid var(--border2);
+  display:flex;gap:7px;align-items:center
+}
+.chat-input{
+  flex:1;background:var(--card);border:1px solid var(--border2);color:var(--white);
+  font-family:var(--fb);font-size:13px;padding:8px 11px;border-radius:9px;outline:none;
+  transition:border-color .15s
+}
+.chat-input::placeholder{color:var(--muted)}
+.chat-input:focus{border-color:rgba(59,125,255,.4)}
+.chat-send{
+  width:34px;height:34px;background:var(--blue);border:none;border-radius:8px;
+  color:#fff;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:opacity .15s;flex-shrink:0
+}
+.chat-send:hover{opacity:.85}
+.chat-send:disabled{opacity:.35;cursor:not-allowed}
+.chat-powered{text-align:center;font-size:10px;color:var(--muted);padding:.4rem;border-top:1px solid var(--border2)}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="container">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <div class="nav-logo-icon"><i class="fas fa-layer-group"></i></div>
+        AonStack
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#services">Services</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#why">Why Us</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <a href="#contact" class="nav-cta">Get Started →</a>
+      <button class="hamburger" id="ham"><i class="fas fa-bars"></i></button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-eyebrow"><span></span>Aon Technology Solutions</div>
+      <h1>AI & SaaS Tools Built for <em>Growing Businesses</em></h1>
+      <p class="hero-sub">Automate customer support, manage your CRM, and deploy enterprise-grade communications — all set up and managed for you.</p>
+      <div class="hero-btns">
+        <a href="#contact" class="btn-primary"><i class="fas fa-bolt"></i> Get Started Free</a>
+        <a href="#services" class="btn-secondary"><i class="fas fa-play-circle"></i> See Services</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-card"><div class="stat-num">🏪</div><div class="stat-lbl">Built for small businesses</div></div>
+        <div class="stat-card"><div class="stat-num">⚡</div><div class="stat-lbl">Done-for-you setup</div></div>
+        <div class="stat-card"><div class="stat-num">🤝</div><div class="stat-lbl">Human support</div></div>
+        <div class="stat-card"><div class="stat-num">🤖</div><div class="stat-lbl">AI customer care</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="container">
+    <div class="trust-inner">
+      <div class="trust-item"><i class="fas fa-store"></i> Built for small businesses</div>
+      <div class="trust-divider"></div>
+      <div class="trust-item"><i class="fas fa-tools"></i> Done-for-you setup</div>
+      <div class="trust-divider"></div>
+      <div class="trust-item"><i class="fas fa-headset"></i> Human support included</div>
+      <div class="trust-divider"></div>
+      <div class="trust-item"><i class="fas fa-robot"></i> AI customer care</div>
+      <div class="trust-divider"></div>
+      <div class="trust-item"><i class="fas fa-undo"></i> 30-Day Money-Back</div>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">What We Offer</div>
+      <h2 class="section-title">Everything your business needs to scale</h2>
+      <p class="section-sub">Six powerful solutions, fully set up and managed for you from day one.</p>
+    </div>
+    <div class="services-grid">
+      <div class="svc-card">
+        <div class="svc-icon"><i class="fas fa-robot"></i></div>
+        <div class="svc-title">AI Chatbots</div>
+        <p class="svc-desc">Intelligent 24/7 customer support that understands context, handles objections, and qualifies leads automatically.</p>
+        <div class="svc-tags"><span class="tag">Multi-language</span><span class="tag">Lead scoring</span><span class="tag">Always on</span></div>
+      </div>
+      <div class="svc-card">
+        <div class="svc-icon"><i class="fas fa-chart-pie"></i></div>
+        <div class="svc-title">CRM Setup & Management</div>
+        <p class="svc-desc">Customized pipelines, automated follow-ups, and data analytics — all configured specifically for your business.</p>
+        <div class="svc-tags"><span class="tag">Pipeline tracking</span><span class="tag">Analytics</span><span class="tag">Full setup</span></div>
+      </div>
+      <div class="svc-card">
+        <div class="svc-icon"><i class="fas fa-magic"></i></div>
+        <div class="svc-title">Customer Automation</div>
+        <p class="svc-desc">Automate workflows, follow-ups, and repetitive tasks. Save hours every week while improving customer experience.</p>
+        <div class="svc-tags"><span class="tag">Trigger-based</span><span class="tag">Multi-tool</span><span class="tag">No-code</span></div>
+      </div>
+      <div class="svc-card">
+        <div class="svc-icon"><i class="fas fa-envelope-open-text"></i></div>
+        <div class="svc-title">AI Email Assistant</div>
+        <p class="svc-desc">Draft, refine, and send better emails faster. AI that learns your tone and optimises every message automatically.</p>
+        <div class="svc-tags"><span class="tag">Tone matching</span><span class="tag">Smart scheduling</span><span class="tag">FOMO campaigns</span></div>
+      </div>
+      <div class="svc-card">
+        <div class="svc-icon"><i class="fas fa-shield-alt"></i></div>
+        <div class="svc-title">Secure Business Comms</div>
+        <p class="svc-desc">Enterprise-grade communication with end-to-end encryption, compliance certifications, and team collaboration built in.</p>
+        <div class="svc-tags"><span class="tag">E2E encrypted</span><span class="tag">Compliance</span><span class="tag">Team chat</span></div>
+      </div>
+      <div class="svc-card">
+        <div class="svc-icon"><i class="fab fa-microsoft"></i></div>
+        <div class="svc-title">Microsoft 365 & AI Tools</div>
+        <p class="svc-desc">Access curated AI tools and Microsoft 365 through AppDirect. Enterprise productivity with expert setup, training, and support.</p>
+        <div class="svc-tags"><span class="tag">M365</span><span class="tag">Unified billing</span><span class="tag">AppDirect</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Pricing & Packages</div>
+      <h2 class="section-title">Simple, transparent pricing</h2>
+      <p class="section-sub">You're paying for setup, customisation, testing, and human support — not just software. Every package has clear monthly limits so you always know what's included.</p>
+    </div>
+
+    <div class="pricing-grid">
+
+      <!-- PACKAGE 1: Starter Setup -->
+      <div class="price-card">
+        <div class="price-badge-row"></div>
+        <div class="price-icon"><i class="fas fa-robot"></i></div>
+        <div class="price-tier">Starter Setup</div>
+        <p class="price-desc">Simple AI customer care for small businesses — set up and ready to handle questions from day one.</p>
+        <div class="price-bestfor">
+          <strong>Best for</strong>
+          Restaurants, salons, solo service providers, and small local businesses.
+        </div>
+        <div class="price-amount">
+          <div class="price-main">$399 <span style="font-size:1rem;font-weight:600;color:var(--muted)">setup</span></div>
+          <div class="price-sub">+ $159/month ongoing support</div>
+          <div class="price-support-tag"><i class="fas fa-headset"></i> Light monthly support</div>
+        </div>
+        <div class="price-features-label">What's included</div>
+        <ul class="price-features">
+          <li><i class="fas fa-check-circle"></i> Website chatbot setup & configuration</li>
+          <li><i class="fas fa-check-circle"></i> Basic FAQ training for your business</li>
+          <li><i class="fas fa-check-circle"></i> Business info, hours & contact details added</li>
+          <li><i class="fas fa-check-circle"></i> Lead capture questions built in</li>
+          <li><i class="fas fa-check-circle"></i> Basic testing before launch</li>
+          <li><i class="fas fa-check-circle"></i> 1 monthly update included</li>
+          <li><i class="fas fa-check-circle"></i> Light monthly support — small updates, chatbot corrections & basic questions</li>
+        </ul>
+        <a href="#contact" class="price-cta cta-outline"><i class="fas fa-calendar-alt"></i> Book Free Demo</a>
+      </div>
+
+      <!-- PACKAGE 2: Business Setup — MOST POPULAR -->
+      <div class="price-card popular">
+        <div class="price-badge-row">
+          <span class="popular-badge"><i class="fas fa-star"></i> Most Popular</span>
+        </div>
+        <div class="price-icon"><i class="fas fa-layer-group"></i></div>
+        <div class="price-tier">Business Setup</div>
+        <p class="price-desc">A more complete AI customer support system for growing service businesses that need more than the basics.</p>
+        <div class="price-bestfor">
+          <strong>Best for</strong>
+          Dental clinics, med spas, real estate agents, consultants, and service businesses.
+        </div>
+        <div class="price-amount">
+          <div class="price-main">$899 <span style="font-size:1rem;font-weight:600;color:var(--muted)">setup</span></div>
+          <div class="price-sub">+ $159/month ongoing support</div>
+          <div class="price-support-tag"><i class="fas fa-headset"></i> Standard monthly support</div>
+        </div>
+        <div class="price-features-label">What's included</div>
+        <ul class="price-features">
+          <li><i class="fas fa-check-circle"></i> Everything in Starter Setup</li>
+          <li><i class="fas fa-check-circle"></i> Detailed FAQ & service training</li>
+          <li><i class="fas fa-check-circle"></i> Contact form or CRM connection</li>
+          <li><i class="fas fa-check-circle"></i> Basic workflow automation</li>
+          <li><i class="fas fa-check-circle"></i> Customer question testing & QA</li>
+          <li><i class="fas fa-check-circle"></i> Up to 2 monthly updates</li>
+          <li><i class="fas fa-check-circle"></i> Standard monthly support — chatbot improvements & troubleshooting</li>
+          <li><i class="fas fa-check-circle"></i> Monthly improvement check-in</li>
+        </ul>
+        <a href="#contact" class="price-cta cta-solid"><i class="fas fa-calendar-alt"></i> Book Free Demo</a>
+      </div>
+
+      <!-- PACKAGE 3: Growth Care -->
+      <div class="price-card">
+        <div class="price-badge-row"></div>
+        <div class="price-icon"><i class="fas fa-chart-line"></i></div>
+        <div class="price-tier">Growth Care</div>
+        <p class="price-desc">Light customer care and digital marketing support to help your business stay active and visible online.</p>
+        <div class="price-bestfor">
+          <strong>Best for</strong>
+          Businesses ready to grow leads, improve follow-up, and stay more active online.
+        </div>
+        <div class="price-amount">
+          <div class="price-main">$199 <span style="font-size:1rem;font-weight:600;color:var(--muted)">/month</span></div>
+          <div class="price-sub">Add-on to Starter or Business Setup</div>
+          <div class="price-support-tag"><i class="fas fa-headset"></i> Priority monthly support</div>
+        </div>
+        <div class="price-features-label">What's included</div>
+        <ul class="price-features">
+          <li><i class="fas fa-check-circle"></i> Customer message review</li>
+          <li><i class="fas fa-check-circle"></i> Google Business Profile support</li>
+          <li><i class="fas fa-check-circle"></i> Basic social media content support</li>
+          <li><i class="fas fa-check-circle"></i> Email marketing support</li>
+          <li><i class="fas fa-check-circle"></i> Lead capture improvement</li>
+          <li><i class="fas fa-check-circle"></i> Monthly growth review</li>
+          <li><i class="fas fa-check-circle"></i> Priority monthly support — customer care & marketing improvements</li>
+        </ul>
+        <div class="price-addon-note">
+          <i class="fas fa-info-circle"></i>
+          <span>Best used as an add-on to Starter or Business Setup. This is light marketing support — not full agency management.</span>
+        </div>
+        <a href="#contact" class="price-cta cta-outline"><i class="fas fa-calendar-alt"></i> Book Free Demo</a>
+      </div>
+
+    </div>
+
+    <!-- IMPORTANT NOTES -->
+    <div class="pricing-notes">
+      <div class="pricing-notes-title"><i class="fas fa-shield-alt"></i> Important Notes</div>
+      <div class="notes-grid">
+        <div class="note-item"><i class="fas fa-circle"></i><span>AonStack provides setup, customisation, testing, and human support. Third-party software, hosting, domain, email, CRM, chatbot, or automation platform fees may be billed separately.</span></div>
+        <div class="note-item"><i class="fas fa-circle"></i><span>Ongoing support is included based on your package. Each package has clear monthly update limits — additional work outside scope may be quoted separately.</span></div>
+        <div class="note-item"><i class="fas fa-circle"></i><span>Customer must provide accurate business information including service details, pricing, policies, business hours, contact information, and any required platform access.</span></div>
+        <div class="note-item"><i class="fas fa-circle"></i><span>Setup timeline depends on customer readiness and how quickly required business information is provided.</span></div>
+        <div class="note-item"><i class="fas fa-circle"></i><span>Growth Care is light digital marketing support and does not include full ad management, daily posting, advanced SEO, or full campaign management unless quoted separately.</span></div>
+        <div class="note-item"><i class="fas fa-circle"></i><span>AonStack helps improve customer response, lead capture, and follow-up systems — but does not guarantee a specific number of sales, bookings, or leads.</span></div>
+        <div class="note-item"><i class="fas fa-circle"></i><span>Monthly support can be cancelled with written notice before the next billing cycle.</span></div>
+        <div class="note-item"><i class="fas fa-circle"></i><span>AonStack may recommend the best package based on your business needs, tools, and current website setup.</span></div>
+      </div>
+    </div>
+
+    <p class="pricing-footer-note">
+      <strong>Not sure which package is right for you?</strong><br>
+      Book a free 20-minute demo call — we'll listen to your needs and recommend the best starting point. No pressure, no commitment.
+    </p>
+
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="why" id="why">
+  <div class="container">
+    <div class="why-grid">
+      <div class="why-content">
+        <div class="section-label" style="margin-bottom:.85rem">Why AonStack</div>
+        <h2>We don't just sell software. <em>We build your system.</em></h2>
+        <p>Most SaaS providers hand you a login and wish you luck. We configure everything, train your team, and stay by your side as you grow.</p>
+        <div class="why-list">
+          <div class="why-item">
+            <div class="why-check"><i class="fas fa-check"></i></div>
+            <div class="why-item-text">
+              <strong>Done-for-you setup</strong>
+              <span>We configure your entire stack from day one — no technical skills needed.</span>
+            </div>
+          </div>
+          <div class="why-item">
+            <div class="why-check"><i class="fas fa-check"></i></div>
+            <div class="why-item-text">
+              <strong>AI that works for your business</strong>
+              <span>Custom-trained on your products, pricing, and tone of voice.</span>
+            </div>
+          </div>
+          <div class="why-item">
+            <div class="why-check"><i class="fas fa-check"></i></div>
+            <div class="why-item-text">
+              <strong>One point of contact</strong>
+              <span>No bouncing between vendors. One team, one bill, one relationship.</span>
+            </div>
+          </div>
+          <div class="why-item">
+            <div class="why-check"><i class="fas fa-check"></i></div>
+            <div class="why-item-text">
+              <strong>Scales as you grow</strong>
+              <span>Add tools and users on demand. Pay only for what you use.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="why-visual">
+        <div class="metric-card">
+          <div class="metric-icon">⚡</div>
+          <div style="flex:1">
+            <div class="metric-num">Fast</div>
+            <div class="metric-lbl">AI responds to customers instantly, 24/7</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon">🛠</div>
+          <div style="flex:1">
+            <div class="metric-num">Done for you</div>
+            <div class="metric-lbl">We handle the full setup — no tech skills needed</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon">🤝</div>
+          <div style="flex:1">
+            <div class="metric-num">Human support</div>
+            <div class="metric-lbl">Real people behind every package, not just software</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon">📈</div>
+          <div style="flex:1">
+            <div class="metric-num">Built to grow</div>
+            <div class="metric-lbl">Start small, add services as your business scales</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Client Stories</div>
+      <h2 class="section-title">What our clients say</h2>
+      <p class="section-sub">We're just getting started — and we'd love for your business to be one of our first success stories.</p>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"Your testimonial could be right here. Book a free demo and let's build something great together."</p>
+        <div class="testi-author">
+          <div class="testi-avatar"><i class="fas fa-user"></i></div>
+          <div>
+            <div class="testi-name">Your name here</div>
+            <div class="testi-role">Small business owner</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"AonStack set everything up for us — we didn't have to touch a thing. This spot is waiting for your story."</p>
+        <div class="testi-author">
+          <div class="testi-avatar"><i class="fas fa-user"></i></div>
+          <div>
+            <div class="testi-name">Your name here</div>
+            <div class="testi-role">E-commerce store owner</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"The AI chatbot handles our customer questions while we sleep. Be our next success story."</p>
+        <div class="testi-author">
+          <div class="testi-avatar"><i class="fas fa-user"></i></div>
+          <div>
+            <div class="testi-name">Your name here</div>
+            <div class="testi-role">Service business owner</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="testi-note">
+      <strong>Be our first featured client.</strong> Book a free demo — early clients get priority support and our best rates.
+    </p>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<section class="cta-band">
+  <div class="container">
+    <div class="cta-inner">
+      <h2>Ready to transform your business?</h2>
+      <p>Join 500+ growing businesses that run smarter with AonStack. Free 14-day trial, no credit card required.</p>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <a href="#contact" class="btn-primary"><i class="fas fa-calendar-alt"></i> Schedule Free Demo</a>
+        <button class="btn-secondary" onclick="openChat()"><i class="fas fa-comments"></i> Chat with AI now</button>
+      </div>
+      <div class="cta-chips">
+        <div class="chip"><i class="fas fa-check"></i> 14-day free trial</div>
+        <div class="chip"><i class="fas fa-check"></i> Free onboarding</div>
+        <div class="chip"><i class="fas fa-check"></i> 30-day money-back</div>
+        <div class="chip"><i class="fas fa-check"></i> Cancel anytime</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="section-label" style="margin-bottom:.85rem">Get in Touch</div>
+        <h2>Let's build your AI stack together</h2>
+        <p>Have questions? Our team responds within 2 hours. Or chat with our AI assistant right now — it knows everything about our services.</p>
+        <div class="contact-methods">
+          <div class="c-method">
+            <div class="c-method-icon"><i class="fas fa-envelope"></i></div>
+            <div class="c-method-text"><strong>Email</strong><span>Info@aontechnology.com</span></div>
+          </div>
+          <div class="c-method">
+            <div class="c-method-icon"><i class="fas fa-phone"></i></div>
+            <div class="c-method-text"><strong>Phone</strong><span>(720) 709-9102</span></div>
+          </div>
+          <div class="c-method">
+            <div class="c-method-icon"><i class="fas fa-map-marker-alt"></i></div>
+            <div class="c-method-text"><strong>Location</strong><span>US-Based · Remote · Austin, TX</span></div>
+          </div>
+        </div>
+        <div class="social-row">
+          <a href="#" class="soc-btn"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#" class="soc-btn"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="soc-btn"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="soc-btn"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+      <form class="contact-form" onsubmit="handleForm(event)">
+        <div class="cf-row">
+          <div><label class="cf-label">First name</label><input class="cf-input" type="text" placeholder="Sarah" required></div>
+          <div><label class="cf-label">Last name</label><input class="cf-input" type="text" placeholder="Johnson" required></div>
+        </div>
+        <div><label class="cf-label">Business email</label><input class="cf-input" type="email" placeholder="sarah@company.com" required></div>
+        <div><label class="cf-label">Company name</label><input class="cf-input" type="text" placeholder="Apex Solutions" required></div>
+        <div>
+          <label class="cf-label">Business type</label>
+          <select class="cf-select" required>
+            <option value="">Select type…</option>
+            <option>Restaurant / Hospitality</option>
+            <option>E-commerce / Online Store</option>
+            <option>Service Business</option>
+            <option>SaaS / Technology</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div><label class="cf-label">Message</label><textarea class="cf-textarea" placeholder="Tell us what you need…" required></textarea></div>
+        <button type="submit" class="btn-primary" style="width:100%;justify-content:center"><i class="fas fa-paper-plane"></i> Send Message</button>
+        <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:.4rem">We respond within 2 hours · No spam, ever.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo"><div class="footer-logo-icon"><i class="fas fa-layer-group"></i></div>AonStack</div>
+        <p class="footer-desc">AI & SaaS solutions for small businesses. US-based, remote-friendly, Austin TX.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Product</h5>
+        <ul>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#why">Why Us</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#">Integrations</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Security</a></li>
+          <li><a href="#">Compliance</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 AonStack — Aon Technology Solutions. All rights reserved.</p>
+      <p>US-Based · Remote · Austin, TX · Info@aontechnology.com</p>
+    </div>
+  </div>
+</footer>
+
+<!-- AI CHAT WIDGET -->
+<button id="chat-bubble" onclick="toggleChat()">
+  <i class="fas fa-comment-dots"></i>
+  <div class="chat-notif">1</div>
+</button>
+
+<div id="chat-window">
+  <div class="chat-header">
+    <div class="chat-avatar">🤖</div>
+    <div>
+      <div class="chat-hname">AonStack AI</div>
+      <div class="chat-hstatus">Online now</div>
+    </div>
+    <button class="chat-close" onclick="toggleChat()"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="chat-msgs" id="chatMsgs">
+    <div class="msg-row ai">
+      <div class="msg-av">AS</div>
+      <div>
+        <div class="msg-bub">👋 Hi! I'm AonStack's AI assistant. I can answer questions about our services, pricing, and setup — or help you get started right now.</div>
+        <div class="quick-chips">
+          <button class="quick-chip" onclick="sendQ(this.textContent)">💰 What does AonStack cost?</button>
+          <button class="quick-chip" onclick="sendQ(this.textContent)">🤖 How does the AI chatbot work?</button>
+          <button class="quick-chip" onclick="sendQ(this.textContent)">⚡ How fast is the setup?</button>
+          <button class="quick-chip" onclick="sendQ(this.textContent)">📋 Book a free demo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="chat-input-row">
+    <input class="chat-input" id="chatInput" placeholder="Ask anything…" onkeydown="if(event.key==='Enter')sendMsg()">
+    <button class="chat-send" id="chatSend" onclick="sendMsg()"><i class="fas fa-paper-plane"></i></button>
+  </div>
+  <div class="chat-powered">Powered by AonStack AI · Available 24/7</div>
+</div>
+
+<script>
+// NAV TOGGLE
+document.getElementById('ham').addEventListener('click',()=>{
+  document.getElementById('navLinks').classList.toggle('open');
+});
+
+// FORM
+function handleForm(e){
+  e.preventDefault();
+  const btn = e.target.querySelector('button[type=submit]');
+  btn.innerHTML = '<i class="fas fa-check"></i> Message sent!';
+  btn.style.background = '#16a34a';
+  setTimeout(()=>{btn.innerHTML='<i class="fas fa-paper-plane"></i> Send Message';btn.style.background='';},3000);
+  e.target.reset();
+}
+
+// CHAT
+let chatOpen = false;
+function toggleChat(){ chatOpen=!chatOpen; document.getElementById('chat-window').style.display=chatOpen?'flex':'none'; document.querySelector('.chat-notif').style.display='none'; }
+function openChat(){ if(!chatOpen)toggleChat(); document.getElementById('chat-window').scrollIntoView({behavior:'smooth',block:'end'}); }
+function sendQ(t){ document.getElementById('chatInput').value=t; sendMsg(); }
+
+const SYSTEM = `You are AonStack's friendly AI sales assistant. AonStack (Aon Technology Solutions) provides AI chatbot setup, customisation, testing, and human support for small and growing businesses.
+
+PRICING PACKAGES:
+- Starter Setup: $399 one-time setup + $159/month. Best for restaurants, salons, solo service providers, small local businesses. Includes chatbot setup, basic FAQ training, lead capture, 1 monthly update, light monthly support.
+- Business Setup: $899 one-time setup + $159/month. Best for dental clinics, med spas, real estate agents, consultants. Includes everything in Starter plus detailed FAQ training, CRM connection, basic automation, up to 2 monthly updates, standard monthly support and improvement check-in. This is the most popular package.
+- Growth Care: $199/month add-on. Best for businesses ready to grow leads and stay active online. Includes message review, Google Business Profile support, social media support, email marketing support, lead improvement, monthly growth review, priority monthly support. Best combined with Starter or Business Setup.
+
+IMPORTANT: Each package has clear monthly limits. Third-party software fees may be billed separately. AonStack does not guarantee specific sales, bookings, or leads.
+KEY POINTS: Done-for-you setup, custom AI trained on your business, human support included, 30-day money-back, free onboarding demo call.
+
+Respond in 2-3 sentences max. Be warm, clear, and helpful. Always end with a soft next step like booking a free demo.`;
+
+let history=[];
+
+async function sendMsg(){
+  const inp=document.getElementById('chatInput');
+  const txt=inp.value.trim(); if(!txt)return;
+  inp.value=''; document.getElementById('chatSend').disabled=true;
+  addMsg(txt,'user');
+  const typing=addTyping();
+  history.push({role:'user',content:txt});
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,system:SYSTEM,messages:history})});
+    const d=await r.json();
+    const reply=d.content.map(b=>b.text||'').join('').trim();
+    typing.remove(); addMsg(reply,'ai'); history.push({role:'assistant',content:reply});
+  }catch(e){typing.remove();addMsg('Sorry, something went wrong. Please try again.','ai');}
+  document.getElementById('chatSend').disabled=false;
+}
+
+function addMsg(text,role){
+  const msgs=document.getElementById('chatMsgs');
+  const row=document.createElement('div');
+  row.className='msg-row '+role;
+  const av=document.createElement('div');
+  av.className='msg-av'+(role==='user'?' user':'');
+  av.textContent=role==='user'?'You':'AS';
+  const bub=document.createElement('div');
+  bub.className='msg-bub';
+  bub.innerHTML=text.replace(/\n/g,'<br>');
+  row.appendChild(av); row.appendChild(bub);
+  msgs.appendChild(row); msgs.scrollTop=msgs.scrollHeight;
+}
+
+function addTyping(){
+  const msgs=document.getElementById('chatMsgs');
+  const row=document.createElement('div');
+  row.className='msg-row ai';
+  const av=document.createElement('div'); av.className='msg-av'; av.textContent='AS';
+  const t=document.createElement('div'); t.className='typing';
+  t.innerHTML='<span></span><span></span><span></span>';
+  row.appendChild(av); row.appendChild(t);
+  msgs.appendChild(row); msgs.scrollTop=msgs.scrollHeight;
+  return row;
+}
+</script>
+</body>
+</html>
