@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aon Stack — SaaS Tools for Online Businesses</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Instrument+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0c0b0f; --paper:#f8f6f1; --cream:#eeebe3; --warm:#ddd8cc;
+  --gold:#b8933e; --gold-lt:#e8c97a; --gold-dim:#7a5f28;
+  --red:#c0392b; --green:#1a6645;
+  --border:#ddd8cc; --border-dk:#b8b0a4;
+  --text:#1a1714; --muted:#6b6458; --faint:#9e968c;
+  --font-d:'Playfair Display',Georgia,serif;
+  --font-b:'Instrument Sans',sans-serif;
+  --r:4px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--text);font-family:var(--font-b);font-size:15px;line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+
+/* FOMO BAR */
+.fomo-bar{background:var(--ink);color:var(--paper);padding:9px 0;overflow:hidden}
+.fomo-track{display:flex;gap:3rem;white-space:nowrap;animation:ticker 32s linear infinite}
+.fomo-track:hover{animation-play-state:paused}
+.fomo-item{font-size:12px;letter-spacing:.04em;display:flex;align-items:center;gap:7px;flex-shrink:0}
+.fomo-dot{width:6px;height:6px;border-radius:50%;background:var(--gold-lt);animation:blink 1.6s ease-in-out infinite}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* NAV */
+nav{background:var(--paper);border-bottom:1px solid var(--border);padding:.9rem 2rem;display:flex;align-items:center;gap:1.5rem;position:sticky;top:0;z-index:90;transition:box-shadow .2s}
+nav.scrolled{box-shadow:0 2px 20px rgba(0,0,0,.08)}
+.nav-brand{font-family:var(--font-d);font-size:1.45rem;font-weight:900;letter-spacing:-.03em;margin-right:auto}
+.nav-brand span{color:var(--gold)}
+.nav-links{display:flex;gap:1.5rem}
+.nav-links a{font-size:13px;font-weight:500;color:var(--muted);transition:color .15s}
+.nav-links a:hover{color:var(--ink)}
+.nav-cta{background:var(--ink);color:var(--paper);font-size:13px;font-weight:600;padding:8px 18px;border-radius:var(--r);cursor:pointer;border:none;transition:background .15s}
+.nav-cta:hover{background:#2a2830}
+@media(max-width:640px){.nav-links{display:none}}
+
+/* HERO */
+.hero{min-height:88vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4rem 1.5rem 3rem;position:relative;overflow:hidden}
+.hero-bg-grid{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:60px 60px;opacity:.4;pointer-events:none}
+.hero-bg-glow{position:absolute;top:20%;left:50%;transform:translateX(-50%);width:700px;height:400px;background:radial-gradient(ellipse,rgba(184,147,62,.12) 0%,transparent 70%);pointer-events:none}
+.hero-content{position:relative;z-index:1;max-width:780px}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-dim);background:rgba(184,147,62,.1);border:1px solid rgba(184,147,62,.25);padding:5px 14px;border-radius:100px;margin-bottom:1.5rem}
+.hero h1{font-family:var(--font-d);font-size:clamp(2.8rem,7vw,5.2rem);font-weight:900;line-height:1.0;letter-spacing:-.04em;color:var(--ink);margin-bottom:1.25rem}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero-sub{font-size:clamp(14px,2vw,17px);color:var(--muted);max-width:520px;margin:0 auto 2rem;line-height:1.7}
+.hero-ctas{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;margin-bottom:2.5rem}
+.btn-primary{background:var(--ink);color:var(--paper);font-weight:600;font-size:14px;padding:13px 26px;border-radius:var(--r);border:none;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:background .15s}
+.btn-primary:hover{background:#2a2830}
+.btn-gold{background:var(--gold);color:var(--ink);font-weight:700;font-size:14px;padding:13px 26px;border-radius:var(--r);border:none;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:background .15s}
+.btn-gold:hover{background:var(--gold-lt)}
+.btn-outline{background:transparent;color:var(--ink);font-weight:600;font-size:14px;padding:12px 24px;border-radius:var(--r);border:1.5px solid var(--border-dk);cursor:pointer;transition:border-color .15s}
+.btn-outline:hover{border-color:var(--ink)}
+.hero-proof{display:flex;align-items:center;justify-content:center;gap:1.5rem;flex-wrap:wrap}
+.proof-stat{text-align:center}
+.proof-num{font-family:var(--font-d);font-size:1.6rem;font-weight:900;color:var(--ink)}
+.proof-label{font-size:11px;color:var(--faint);letter-spacing:.04em;text-transform:uppercase}
+.proof-div{width:1px;height:36px;background:var(--border)}
+
+/* SECTIONS */
+.section{padding:5rem 1.5rem;max-width:1060px;margin:0 auto}
+.sec-label{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:.75rem}
+.sec-title{font-family:var(--font-d);font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;letter-spacing:-.03em;line-height:1.1;color:var(--ink);margin-bottom:1rem}
+.sec-sub{font-size:14px;color:var(--muted);max-width:480px;line-height:1.7}
+.sec-header{margin-bottom:3rem}
+
+/* HOW */
+.how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+@media(max-width:640px){.how-grid{grid-template-columns:1fr}}
+.how-card{padding:1.75rem;background:var(--cream);border:1px solid var(--border);border-radius:var(--r);position:relative;overflow:hidden;transition:transform .2s}
+.how-card:hover{transform:translateY(-2px)}
+.how-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.how-card:hover::before{transform:scaleX(1)}
+.how-num{font-family:var(--font-d);font-size:3.5rem;font-weight:900;color:var(--border-dk);line-height:1;margin-bottom:.75rem}
+.how-title{font-family:var(--font-d);font-size:1.05rem;font-weight:700;margin-bottom:.5rem}
+.how-desc{font-size:13px;color:var(--muted);line-height:1.7}
+
+/* PACKAGES */
+.packages-bg{background:var(--ink);padding:5rem 1.5rem}
+.packages-inner{max-width:1060px;margin:0 auto}
+.packages-inner .sec-label{color:var(--gold-lt)}
+.packages-inner .sec-title{color:var(--paper)}
+.packages-inner .sec-sub{color:rgba(255,255,255,.45)}
+.pkg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:3rem}
+@media(max-width:720px){.pkg-grid{grid-template-columns:1fr}}
+.pkg-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:var(--r);padding:1.75rem;display:flex;flex-direction:column;position:relative;transition:border-color .2s,transform .15s}
+.pkg-card:hover{border-color:rgba(255,255,255,.22);transform:translateY(-2px)}
+.pkg-card.featured{background:rgba(184,147,62,.08);border-color:rgba(184,147,62,.35)}
+.pkg-card.featured:hover{border-color:rgba(184,147,62,.6)}
+.feat-tag{position:absolute;top:-11px;left:1.25rem;background:var(--gold);color:var(--ink);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:100px}
+.pkg-icon{font-size:2rem;margin-bottom:1rem}
+.pkg-name-lg{font-family:var(--font-d);font-size:1.2rem;font-weight:700;color:var(--paper);margin-bottom:.35rem}
+.pkg-tagline-lg{font-size:12px;color:rgba(255,255,255,.45);font-style:italic;margin-bottom:1.25rem}
+.pkg-amount-lg{font-family:var(--font-d);font-size:2.4rem;font-weight:900;color:var(--paper);line-height:1}
+.pkg-card.featured .pkg-amount-lg{color:var(--gold-lt)}
+.pkg-cadence-lg{font-size:12px;color:rgba(255,255,255,.4);margin-top:3px;margin-bottom:1.5rem}
+.pkg-feats{list-style:none;display:flex;flex-direction:column;gap:6px;margin-bottom:1.5rem;flex:1}
+.pkg-feats li{font-size:13px;color:rgba(255,255,255,.6);padding-left:1.2rem;position:relative}
+.pkg-feats li::before{content:'—';position:absolute;left:0;color:rgba(255,255,255,.25)}
+.pkg-btn{width:100%;padding:12px;background:rgba(255,255,255,.08);color:var(--paper);font-family:var(--font-b);font-size:13px;font-weight:600;border:1px solid rgba(255,255,255,.15);border-radius:var(--r);cursor:pointer;transition:all .15s}
+.pkg-btn:hover{background:rgba(255,255,255,.14)}
+.pkg-card.featured .pkg-btn{background:var(--gold);color:var(--ink);border-color:var(--gold)}
+.pkg-card.featured .pkg-btn:hover{background:var(--gold-lt)}
+.addon-banner{margin-top:1.25rem;background:rgba(255,255,255,.04);border:1px dashed rgba(184,147,62,.35);border-radius:var(--r);padding:1.1rem 1.4rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.addon-info{flex:1;min-width:200px}
+.addon-name-b{font-size:14px;font-weight:600;color:var(--paper)}
+.addon-desc-b{font-size:12px;color:rgba(255,255,255,.4)}
+.addon-price-b{font-family:var(--font-d);font-size:1.2rem;font-weight:700;color:var(--gold-lt);white-space:nowrap}
+.addon-cta-b{padding:8px 18px;background:rgba(184,147,62,.15);border:1px solid rgba(184,147,62,.3);color:var(--gold-lt);font-size:12px;font-weight:600;border-radius:var(--r);cursor:pointer;transition:all .15s}
+.addon-cta-b:hover{background:rgba(184,147,62,.25)}
+
+/* TESTIMONIALS */
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+@media(max-width:720px){.testi-grid{grid-template-columns:1fr}}
+.testi-card{background:var(--cream);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem}
+.testi-stars{color:var(--gold);font-size:13px;margin-bottom:.75rem}
+.testi-quote{font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:1rem;font-style:italic}
+.testi-author{font-size:12px;font-weight:600;color:var(--ink)}
+.testi-role{font-size:11px;color:var(--faint)}
+
+/* CHECKOUT MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(12,11,15,.75);z-index:200;display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal-box{background:var(--paper);border-radius:8px;width:100%;max-width:940px;max-height:92vh;overflow-y:auto;box-shadow:0 8px 60px rgba(0,0,0,.3);display:grid;grid-template-columns:1fr 340px;position:relative}
+@media(max-width:680px){.modal-box{grid-template-columns:1fr;max-height:95vh}}
+.modal-left{padding:2rem;border-right:1px solid var(--border)}
+.modal-right{padding:2rem;background:var(--ink);color:var(--paper);border-radius:0 8px 8px 0}
+@media(max-width:680px){.modal-right{border-radius:0}}
+.modal-close{position:absolute;top:12px;right:14px;background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);z-index:5;line-height:1}
+.modal-h{font-family:var(--font-d);font-size:1.4rem;font-weight:900;margin-bottom:1.25rem;color:var(--ink)}
+.mpkg{display:flex;align-items:flex-start;gap:.75rem;padding:.85rem;border:1.5px solid var(--border);border-radius:var(--r);margin-bottom:.55rem;cursor:pointer;transition:border-color .15s}
+.mpkg:hover{border-color:var(--border-dk)}
+.mpkg.sel{border-color:var(--ink)}
+.mpkg.feat-m{border-color:var(--gold)}
+.mpkg.feat-m.sel{border-color:var(--gold-dim);background:#fffdf7}
+.mpkg-r{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--border-dk);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.mpkg.sel .mpkg-r{background:var(--ink);border-color:var(--ink)}
+.mpkg.feat-m.sel .mpkg-r{background:var(--gold-dim);border-color:var(--gold-dim)}
+.mpkg-rd{width:7px;height:7px;background:#fff;border-radius:50%;opacity:0;transition:opacity .15s}
+.mpkg.sel .mpkg-rd{opacity:1}
+.mpkg-body{flex:1}
+.mpkg-name{font-size:13px;font-weight:600;color:var(--ink)}
+.mpkg-desc{font-size:12px;color:var(--muted)}
+.mpkg-p{font-family:var(--font-d);font-size:1rem;font-weight:700;color:var(--ink);white-space:nowrap}
+.mpkg.feat-m .mpkg-p{color:var(--gold-dim)}
+.maddon{display:flex;align-items:center;gap:.75rem;padding:.75rem;border:1.5px dashed var(--border);border-radius:var(--r);margin-top:.4rem;cursor:pointer;transition:all .15s}
+.maddon:hover{border-color:var(--gold)}
+.maddon.sel{border-color:var(--gold-dim);background:#fffdf7}
+.maddon-cb{width:16px;height:16px;border:1.5px solid var(--border-dk);border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;transition:all .15s}
+.maddon.sel .maddon-cb{background:var(--gold-dim);border-color:var(--gold-dim);color:#fff}
+.fl{display:flex;flex-direction:column;gap:.5rem;margin-top:1.1rem;padding-top:1.1rem;border-top:1px solid var(--border)}
+.fl label{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.fl input{background:var(--cream);border:1px solid var(--border);color:var(--text);font-family:var(--font-b);font-size:13px;padding:9px 11px;border-radius:var(--r);outline:none;transition:border-color .15s}
+.fl input:focus{border-color:var(--border-dk)}
+.fl input::placeholder{color:var(--faint)}
+/* payment right */
+.op-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.9rem}
+.op-r{display:flex;justify-content:space-between;font-size:13px;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.07)}
+.op-r:last-of-type{border-bottom:none}
+.op-k{color:rgba(255,255,255,.5)}
+.op-v{font-weight:600}
+.op-tot{display:flex;justify-content:space-between;align-items:baseline;margin:.8rem 0 1.1rem}
+.op-tot-lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.4)}
+.op-tot-v{font-family:var(--font-d);font-size:2rem;font-weight:900;color:var(--gold-lt)}
+.div-h{height:1px;background:rgba(255,255,255,.08);margin:.85rem 0}
+.pfl{display:block;font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.3rem;margin-top:.5rem}
+.pfi{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--paper);font-family:var(--font-b);font-size:13px;padding:9px 11px;border-radius:var(--r);outline:none;transition:border-color .15s;margin-bottom:0}
+.pfi:focus{border-color:rgba(255,255,255,.35)}
+.pfi::placeholder{color:rgba(255,255,255,.22)}
+.pf-row{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:0}
+.apple-btn{width:100%;padding:12px;background:#fff;color:#000;border:none;border-radius:var(--r);font-weight:600;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:.7rem;transition:opacity .15s}
+.apple-btn:hover{opacity:.9}
+.or-d{display:flex;align-items:center;gap:8px;margin-bottom:.7rem}
+.or-d::before,.or-d::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.1)}
+.or-d span{font-size:11px;color:rgba(255,255,255,.3)}
+.pay-btn{width:100%;padding:13px;background:var(--gold);color:var(--ink);font-family:var(--font-d);font-size:1rem;font-weight:700;border:none;border-radius:var(--r);cursor:pointer;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:.65rem}
+.pay-btn:hover{background:var(--gold-lt)}
+.trust-ln{text-align:center;font-size:10px;color:rgba(255,255,255,.28);margin-top:.65rem}
+/* Confirmation */
+.modal-confirm{display:none;padding:2.5rem;text-align:center;grid-column:1/-1}
+.c-check{width:64px;height:64px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;margin:0 auto 1.25rem;animation:popIn .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.c-title{font-family:var(--font-d);font-size:2rem;font-weight:900;margin-bottom:.65rem}
+.c-sub{font-size:14px;color:var(--muted);line-height:1.7;max-width:440px;margin:0 auto 1.5rem}
+.c-det{background:var(--cream);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem;text-align:left;margin-bottom:1.5rem}
+.cdr{display:flex;justify-content:space-between;font-size:13px;padding:.3rem 0;border-bottom:1px solid var(--border)}
+.cdr:last-child{border-bottom:none;font-weight:600}
+.cdk{color:var(--muted)}
+.ns-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem}
+.ns-b{background:var(--cream);border:1px solid var(--border);border-radius:var(--r);padding:1rem;text-align:center}
+.ns-i{font-size:1.4rem;margin-bottom:.4rem}
+.ns-t{font-size:12px;font-weight:600;margin-bottom:.2rem}
+.ns-d{font-size:11px;color:var(--muted);line-height:1.4}
+
+/* AI CHAT WIDGET */
+.chat-bubble{position:fixed;bottom:24px;right:24px;z-index:300}
+.chat-toggle{width:58px;height:58px;border-radius:50%;background:var(--ink);color:var(--paper);border:none;cursor:pointer;font-size:24px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,.25),0 0 0 3px rgba(184,147,62,.3);transition:transform .2s;position:relative}
+.chat-toggle:hover{transform:scale(1.07)}
+.chat-unread{position:absolute;top:-2px;right:-2px;width:16px;height:16px;border-radius:50%;background:var(--red);color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;animation:popIn .3s cubic-bezier(.34,1.56,.64,1)}
+.chat-window{position:fixed;bottom:96px;right:24px;width:360px;max-width:calc(100vw - 48px);background:var(--paper);border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 48px rgba(0,0,0,.18);display:none;flex-direction:column;z-index:300;overflow:hidden;max-height:540px}
+.chat-window.open{display:flex}
+.cw-hdr{background:var(--ink);color:var(--paper);padding:1rem 1.1rem;display:flex;align-items:center;gap:10px}
+.cw-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-lt));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--ink);flex-shrink:0}
+.cw-inf{flex:1}
+.cw-nm{font-size:13px;font-weight:600}
+.cw-st{font-size:11px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:4px}
+.cw-std{width:6px;height:6px;background:var(--gold-lt);border-radius:50%;animation:blink 1.6s ease-in-out infinite}
+.cw-cls{background:none;border:none;color:rgba(255,255,255,.5);font-size:18px;cursor:pointer;padding:0 2px}
+.cw-msgs{flex:1;overflow-y:auto;padding:.9rem;display:flex;flex-direction:column;gap:10px;min-height:240px}
+.cw-msg{display:flex;gap:7px;max-width:88%;animation:fadeUp .2s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.cw-msg.user{align-self:flex-end;flex-direction:row-reverse}
+.msg-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px}
+.ai-av{background:linear-gradient(135deg,var(--gold),var(--gold-lt));color:var(--ink)}
+.user-av{background:var(--ink);color:var(--paper)}
+.msg-bub{padding:8px 12px;border-radius:10px;font-size:13px;line-height:1.65}
+.cw-msg.ai .msg-bub{background:var(--cream);border:1px solid var(--border);border-bottom-left-radius:3px}
+.cw-msg.user .msg-bub{background:var(--ink);color:var(--paper);border-bottom-right-radius:3px}
+.typing-dots{display:flex;gap:4px;padding:10px 12px;background:var(--cream);border:1px solid var(--border);border-radius:10px;border-bottom-left-radius:3px;width:fit-content}
+.typing-dots span{width:5px;height:5px;background:var(--faint);border-radius:50%;animation:tdot .9s ease-in-out infinite}
+.typing-dots span:nth-child(2){animation-delay:.15s}
+.typing-dots span:nth-child(3){animation-delay:.3s}
+@keyframes tdot{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-4px)}}
+.cw-sugs{padding:.5rem .9rem;display:flex;gap:5px;flex-wrap:wrap;border-top:1px solid var(--border)}
+.cw-sug{font-size:11px;padding:4px 9px;background:var(--cream);border:1px solid var(--border);border-radius:100px;cursor:pointer;color:var(--muted);transition:all .15s;white-space:nowrap}
+.cw-sug:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.cw-inp-row{padding:.65rem .9rem;border-top:1px solid var(--border);display:flex;gap:6px;align-items:flex-end}
+.cw-inp{flex:1;background:var(--cream);border:1px solid var(--border);color:var(--text);font-family:var(--font-b);font-size:13px;padding:8px 11px;border-radius:8px;outline:none;resize:none;min-height:36px;max-height:100px;line-height:1.5;transition:border-color .15s}
+.cw-inp:focus{border-color:var(--border-dk)}
+.cw-send{width:36px;height:36px;background:var(--ink);color:var(--paper);border:none;border-radius:8px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .15s}
+.cw-send:hover{opacity:.8}
+.cw-send:disabled{opacity:.3;cursor:not-allowed}
+
+/* FOOTER */
+footer{background:var(--ink);color:rgba(255,255,255,.5);padding:3rem 1.5rem 2rem;margin-top:5rem}
+.footer-inner{max-width:1060px;margin:0 auto;display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:2.5rem}
+@media(max-width:640px){.footer-inner{grid-template-columns:1fr 1fr}}
+.footer-brand{font-family:var(--font-d);font-size:1.4rem;font-weight:900;color:var(--paper);margin-bottom:.6rem}
+.footer-brand span{color:var(--gold)}
+.footer-tagline{font-size:12px;line-height:1.6;color:rgba(255,255,255,.4)}
+.footer-col h4{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:.75rem}
+.footer-col a{display:block;font-size:13px;color:rgba(255,255,255,.4);margin-bottom:.4rem;cursor:pointer;transition:color .15s}
+.footer-col a:hover{color:var(--paper)}
+.footer-bottom{max-width:1060px;margin:2rem auto 0;padding-top:1.25rem;border-top:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem;font-size:12px;color:rgba(255,255,255,.3)}
+
+/* PROCESSING */
+.proc-overlay{position:fixed;inset:0;background:rgba(12,11,15,.8);z-index:400;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;backdrop-filter:blur(3px)}
+.proc-overlay.on{display:flex}
+.proc-spin{width:44px;height:44px;border:3px solid rgba(255,255,255,.15);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.proc-lbl{font-family:var(--font-d);font-size:1.1rem;color:var(--paper)}
+
+/* FADE IN */
+.fade-up{opacity:0;transform:translateY(24px);transition:opacity .5s ease,transform .5s ease}
+.fade-up.visible{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<!-- FOMO BAR -->
+<div class="fomo-bar">
+  <div class="fomo-track">
+    <div class="fomo-item"><span class="fomo-dot"></span>🛒 Sarah K. just purchased SaaS Launch Kit</div>
+    <div class="fomo-item"><span class="fomo-dot"></span>⭐ Marcus T. added Digital Marketing Care</div>
+    <div class="fomo-item"><span class="fomo-dot"></span>🚀 Real Estate Pro just went live with AppDirect</div>
+    <div class="fomo-item"><span class="fomo-dot"></span>🔥 47 businesses upgraded this week</div>
+    <div class="fomo-item"><span class="fomo-dot"></span>💬 "Setup done same day!" — E-commerce store</div>
+    <div class="fomo-item"><span class="fomo-dot"></span>⚡ Only 4 free onboarding slots left this week</div>
+    <div class="fomo-item"><span class="fomo-dot"></span>📈 Marketing Agency: "3× more leads in 30 days"</div>
+    <div class="fomo-item"><span class="fomo-dot"></span>🛒 Priya N. just purchased SaaS Starter Kit</div>
+    <!-- duplicate -->
+    <div class="fomo-item"><span class="fomo-dot"></span>🛒 Sarah K. just purchased SaaS Launch Kit</div>
+    <div class="fomo-item"><span class="fomo-dot"></span>⭐ Marcus T. added Digital Marketing Care</div>
+    <div class="fomo-item"><span class="fomo-dot"></span>🚀 Real Estate Pro just went live with AppDirect</div>
+    <div class="fomo-item"><span class="fomo-dot"></span>🔥 47 businesses upgraded this week</div>
+    <div class="fomo-item"><span class="fomo-dot"></span>💬 "Setup done same day!" — E-commerce store</div>
+    <div class="fomo-item"><span class="fomo-dot"></span>⚡ Only 4 free onboarding slots left this week</div>
+    <div class="fomo-item"><span class="fomo-dot"></span>📈 Marketing Agency: "3× more leads in 30 days"</div>
+    <div class="fomo-item"><span class="fomo-dot"></span>🛒 Priya N. just purchased SaaS Starter Kit</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <div class="nav-brand">Aon <span>Stack</span></div>
+  <div class="nav-links">
+    <a href="#how">How it works</a>
+    <a href="#packages">Packages</a>
+    <a href="#testimonials">Results</a>
+  </div>
+  <button class="nav-cta" onclick="openModal()">Get Started</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-bg-glow"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">🔥 <span id="fomo-count">47</span> online businesses upgraded this week</div>
+    <h1>Grow Your Business<br>with <em>Smarter</em> SaaS Tools</h1>
+    <p class="hero-sub">AppDirect-powered SaaS packages for online businesses. We handle the setup, you focus on growth. AI auto-respond, digital marketing, cloud tools — all in one stack.</p>
+    <div class="hero-ctas">
+      <button class="btn-gold" onclick="openModal()">🚀 Get Started Today</button>
+      <button class="btn-outline" onclick="openChat()">💬 Chat with AI Assistant</button>
+    </div>
+    <div class="hero-proof">
+      <div class="proof-stat"><div class="proof-num">3.2×</div><div class="proof-label">More leads</div></div>
+      <div class="proof-div"></div>
+      <div class="proof-stat"><div class="proof-num">Same Day</div><div class="proof-label">Delivery</div></div>
+      <div class="proof-div"></div>
+      <div class="proof-stat"><div class="proof-num">24/7</div><div class="proof-label">AI support</div></div>
+      <div class="proof-div"></div>
+      <div class="proof-stat"><div class="proof-num">$99</div><div class="proof-label">Starts from</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section">
+    <div class="sec-header fade-up">
+      <div class="sec-label">How it works</div>
+      <h2 class="sec-title">Up and running in 3 steps</h2>
+      <p class="sec-sub">No technical skill needed. We guide you through everything — or set it all up for you.</p>
+    </div>
+    <div class="how-grid">
+      <div class="how-card fade-up">
+        <div class="how-num">01</div>
+        <div class="how-title">Pick your package</div>
+        <p class="how-desc">Choose the SaaS Starter Kit, Launch Kit, or Digital Marketing Care based on how much support you want. Add marketing to any package for $199/month.</p>
+      </div>
+      <div class="how-card fade-up">
+        <div class="how-num">02</div>
+        <div class="how-title">We set everything up</div>
+        <p class="how-desc">Same-day digital delivery for Starter. Launch Kit includes a 30-minute onboarding call, custom templates, and 7-day email support so you're never stuck.</p>
+      </div>
+      <div class="how-card fade-up">
+        <div class="how-num">03</div>
+        <div class="how-title">Start growing</div>
+        <p class="how-desc">Your AI assistant handles lead responses 24/7. Your marketing runs automatically. You close more deals with less effort — starting day one.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PACKAGES -->
+<div id="packages">
+  <div class="packages-bg">
+    <div class="packages-inner">
+      <div class="sec-label fade-up">Pricing</div>
+      <h2 class="sec-title fade-up" style="color:var(--paper)">Simple, transparent packages</h2>
+      <p class="sec-sub fade-up">No hidden fees. No long contracts. Everything you need to get your SaaS stack live and generating revenue.</p>
+      <div class="pkg-grid">
+        <div class="pkg-card fade-up">
+          <div class="pkg-icon">⚡</div>
+          <div class="pkg-name-lg">SaaS Starter Kit</div>
+          <div class="pkg-tagline-lg">Buy the tool. Get the guide. Start faster.</div>
+          <div class="pkg-amount-lg">$99</div>
+          <div class="pkg-cadence-lg">one-time payment</div>
+          <ul class="pkg-feats">
+            <li>SaaS product recommendation</li>
+            <li>Purchase &amp; signup guidance</li>
+            <li>Simple setup checklist</li>
+            <li>Beginner guide + basic templates</li>
+            <li>Same-day digital delivery</li>
+          </ul>
+          <button class="pkg-btn" onclick="openModal('starter')">Get Starter Kit →</button>
+        </div>
+        <div class="pkg-card featured fade-up">
+          <div class="feat-tag">Most Popular</div>
+          <div class="pkg-icon">🚀</div>
+          <div class="pkg-name-lg">SaaS Launch Kit</div>
+          <div class="pkg-tagline-lg">Guidance, templates, and onboarding support.</div>
+          <div class="pkg-amount-lg">$299</div>
+          <div class="pkg-cadence-lg">one-time payment</div>
+          <ul class="pkg-feats">
+            <li>Everything in Starter Kit</li>
+            <li>Business needs review</li>
+            <li>Recommended SaaS setup plan</li>
+            <li>Industry-specific templates</li>
+            <li>FAQ &amp; customer response templates</li>
+            <li>30-minute onboarding call</li>
+            <li>7-day email support</li>
+          </ul>
+          <button class="pkg-btn" onclick="openModal('launch')">Get Launch Kit →</button>
+        </div>
+        <div class="pkg-card fade-up">
+          <div class="pkg-icon">📈</div>
+          <div class="pkg-name-lg">Digital Marketing Care</div>
+          <div class="pkg-tagline-lg">Ongoing SEO and marketing support.</div>
+          <div class="pkg-amount-lg">$299</div>
+          <div class="pkg-cadence-lg">per month</div>
+          <ul class="pkg-feats">
+            <li>Basic SEO review</li>
+            <li>Google Business Profile support</li>
+            <li>Monthly keyword + content suggestions</li>
+            <li>Social media content ideas</li>
+            <li>Email marketing suggestions</li>
+            <li>Monthly performance review + summary</li>
+          </ul>
+          <button class="pkg-btn" onclick="openModal('marketing')">Get Marketing Care →</button>
+        </div>
+      </div>
+      <div class="addon-banner fade-up">
+        <div class="addon-info">
+          <div class="addon-name-b">Add Digital Marketing Care to any SaaS Package <span style="background:rgba(0,230,118,.15);color:#4dffaa;font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;margin-left:5px">SAVE $100/mo</span></div>
+          <div class="addon-desc-b">Same full service — discounted because you're already an Aon Stack customer</div>
+        </div>
+        <div class="addon-price-b">$199<span style="font-size:12px;font-weight:400;color:rgba(255,255,255,.4)">/mo</span></div>
+        <button class="addon-cta-b" onclick="openModal('launch')">Add to a Package →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="section">
+    <div class="sec-header fade-up">
+      <div class="sec-label">Results</div>
+      <h2 class="sec-title">What our customers say</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card fade-up">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"I had the Starter Kit running the same afternoon I bought it. The checklist made everything clear — no technical help needed at all."</p>
+        <div class="testi-author">Jordan M.</div><div class="testi-role">E-commerce store owner</div>
+      </div>
+      <div class="testi-card fade-up">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"The Launch Kit onboarding call was worth it alone. They reviewed our whole business and gave us a setup plan specific to our industry."</p>
+        <div class="testi-author">Priya N.</div><div class="testi-role">Marketing agency founder</div>
+      </div>
+      <div class="testi-card fade-up">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"Digital Marketing Care at $199/month as an add-on is a steal. Our Google ranking went up and our content calendar is sorted."</p>
+        <div class="testi-author">David L.</div><div class="testi-role">Real estate professional</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">Aon <span>Stack</span></div>
+      <p class="footer-tagline">AppDirect-powered SaaS solutions for online businesses. We handle the tech so you can focus on growth.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Packages</h4>
+      <a onclick="openModal('starter')">SaaS Starter Kit — $99</a>
+      <a onclick="openModal('launch')">SaaS Launch Kit — $299</a>
+      <a onclick="openModal('marketing')">Digital Marketing Care — $299/mo</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a>About Aon Stack</a>
+      <a>AppDirect Partnership</a>
+      <a>Contact Us</a>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <a onclick="openChat()">AI Chat — 24/7</a>
+      <a>FAQ</a>
+      <a>Email Support</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Aon Stack · Powered by AppDirect</span>
+    <span>🔐 Secure checkout · Same-day delivery</span>
+  </div>
+</footer>
+
+<!-- ══ CHECKOUT MODAL ══ -->
+<div class="modal-overlay" id="checkout-modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box" id="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+
+    <div class="modal-left" id="modal-left">
+      <div class="modal-h">Choose your package</div>
+      <div class="mpkg" id="mpkg-starter" onclick="mSelPkg('starter')">
+        <div class="mpkg-r"><div class="mpkg-rd"></div></div>
+        <div class="mpkg-body"><div class="mpkg-name">SaaS Starter Kit</div><div class="mpkg-desc">Same-day delivery · DIY guide</div></div>
+        <div class="mpkg-p">$99 <span style="font-size:11px;color:var(--muted);font-weight:400">one-time</span></div>
+      </div>
+      <div class="mpkg feat-m" id="mpkg-launch" onclick="mSelPkg('launch')">
+        <div class="mpkg-r"><div class="mpkg-rd"></div></div>
+        <div class="mpkg-body"><div class="mpkg-name">SaaS Launch Kit ⭐ Most Popular</div><div class="mpkg-desc">Onboarding call · Templates · 7-day support</div></div>
+        <div class="mpkg-p">$299 <span style="font-size:11px;color:var(--muted);font-weight:400">one-time</span></div>
+      </div>
+      <div class="mpkg" id="mpkg-marketing" onclick="mSelPkg('marketing')">
+        <div class="mpkg-r"><div class="mpkg-rd"></div></div>
+        <div class="mpkg-body"><div class="mpkg-name">Digital Marketing Care</div><div class="mpkg-desc">SEO + social + email marketing monthly</div></div>
+        <div class="mpkg-p">$299 <span style="font-size:11px;color:var(--muted);font-weight:400">/mo</span></div>
+      </div>
+      <div class="maddon" id="maddon-row" onclick="mToggleAddon()" style="display:none">
+        <div class="maddon-cb" id="maddon-cb"></div>
+        <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--ink)">+ Digital Marketing Care <span style="background:#e8f5e9;color:var(--green);font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;margin-left:4px">SAVE $100/mo</span></div><div style="font-size:12px;color:var(--muted)">Add SEO + digital marketing support</div></div>
+        <div style="font-family:var(--font-d);font-size:1rem;font-weight:700;color:var(--gold-dim)">$199<span style="font-size:11px;font-weight:400;color:var(--muted)">/mo</span></div>
+      </div>
+      <div class="fl">
+        <label>Your name</label>
+        <input id="m-name" type="text" placeholder="Jane Smith">
+        <label>Email (receipt + delivery)</label>
+        <input id="m-email" type="email" placeholder="you@yourbusiness.com">
+      </div>
+    </div>
+
+    <div class="modal-right" id="modal-right">
+      <div class="op-lbl">Order Summary</div>
+      <div id="m-summary">
+        <div class="op-r"><span class="op-k">Package</span><span class="op-v" id="ms-pkg">—</span></div>
+        <div class="op-r" id="ms-addon-row" style="display:none"><span class="op-k">+ Digital Marketing Care</span><span class="op-v" style="color:var(--gold-lt)">$199/mo</span></div>
+      </div>
+      <div class="div-h"></div>
+      <div class="op-tot">
+        <div><div class="op-tot-lbl">Total</div><div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:2px" id="ms-cad"></div></div>
+        <div class="op-tot-v" id="ms-tot">$—</div>
+      </div>
+      <button class="apple-btn" onclick="processOrder('apple')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.44c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.39-1.32 2.76-2.54 3.95zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" fill="currentColor"/></svg>
+        Pay with Apple Pay
+      </button>
+      <div class="or-d"><span>or pay by card</span></div>
+      <label class="pfl">Card number</label>
+      <input class="pfi" id="m-card" type="text" placeholder="1234 5678 9012 3456" maxlength="19" oninput="fmtCard(this)" style="margin-bottom:.5rem">
+      <div class="pf-row">
+        <div><label class="pfl">Expiry</label><input class="pfi" id="m-exp" type="text" placeholder="MM / YY" maxlength="7" oninput="fmtExp(this)"></div>
+        <div><label class="pfl">CVC</label><input class="pfi" id="m-cvc" type="text" placeholder="123" maxlength="4"></div>
+      </div>
+      <button class="pay-btn" onclick="processOrder('card')">🔒 Complete Purchase</button>
+      <div class="trust-ln">256-bit SSL · Visa · Mastercard · Amex · Apple Pay</div>
+    </div>
+
+    <div class="modal-confirm" id="modal-confirm">
+      <div class="c-check">✓</div>
+      <div class="c-title">You're all set!</div>
+      <p class="c-sub">Order confirmed. Your package is on the way — check your inbox for same-day delivery and next steps.</p>
+      <div class="c-det" id="m-conf-det"></div>
+      <div class="ns-row">
+        <div class="ns-b"><div class="ns-i">📬</div><div class="ns-t">Check inbox</div><div class="ns-d">Package + receipt incoming</div></div>
+        <div class="ns-b"><div class="ns-i">📞</div><div class="ns-t">We'll reach out</div><div class="ns-d">Onboarding within 24 hrs</div></div>
+        <div class="ns-b"><div class="ns-i">🚀</div><div class="ns-t">Go live</div><div class="ns-d">Follow your setup guide</div></div>
+      </div>
+      <button class="btn-primary" style="margin-top:1.5rem" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- AI CHAT WIDGET -->
+<div class="chat-bubble">
+  <div class="chat-window" id="chat-window">
+    <div class="cw-hdr">
+      <div class="cw-av">AS</div>
+      <div class="cw-inf">
+        <div class="cw-nm">Aon Stack AI Assistant</div>
+        <div class="cw-st"><span class="cw-std"></span>Online — replies instantly</div>
+      </div>
+      <button class="cw-cls" onclick="document.getElementById('chat-window').classList.remove('open')">✕</button>
+    </div>
+    <div class="cw-msgs" id="cw-msgs">
+      <div class="cw-msg ai">
+        <div class="ai-av msg-av">AS</div>
+        <div class="msg-bub">👋 Hi! I'm your Aon Stack AI assistant, available 24/7.<br><br>I can help you pick the right package, answer any questions, or handle any concerns. What's on your mind?</div>
+      </div>
+    </div>
+    <div class="cw-sugs" id="cw-sugs">
+      <span class="cw-sug" onclick="cwSend(this.textContent)">What's included?</span>
+      <span class="cw-sug" onclick="cwSend(this.textContent)">Which package suits me?</span>
+      <span class="cw-sug" onclick="cwSend(this.textContent)">How fast is delivery?</span>
+      <span class="cw-sug" onclick="cwSend(this.textContent)">Is there a free trial?</span>
+    </div>
+    <div class="cw-inp-row">
+      <textarea class="cw-inp" id="cw-inp" placeholder="Ask anything…" rows="1"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();cwSend()}"></textarea>
+      <button class="cw-send" id="cw-send-btn" onclick="cwSend()">➤</button>
+    </div>
+  </div>
+  <button class="chat-toggle" onclick="toggleChat()">
+    💬
+    <span class="chat-unread" id="unread-badge">1</span>
+  </button>
+</div>
+
+<!-- PROCESSING OVERLAY -->
+<div class="proc-overlay" id="proc">
+  <div class="proc-spin"></div>
+  <div class="proc-lbl">Processing your order…</div>
+</div>
+
+<script>
+/* NAV */
+window.addEventListener('scroll',()=>document.getElementById('main-nav').classList.toggle('scrolled',scrollY>40));
+
+/* FOMO counter */
+let fN=47;
+setInterval(()=>{if(Math.random()<.3){fN++;document.getElementById('fomo-count').textContent=fN;}},9000);
+
+/* FADE UP */
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.1});
+document.querySelectorAll('.fade-up').forEach(el=>obs.observe(el));
+
+/* ─ MODAL ─ */
+const pkgs={starter:{name:'SaaS Starter Kit',price:99,cad:'one-time'},launch:{name:'SaaS Launch Kit',price:299,cad:'one-time'},marketing:{name:'Digital Marketing Care',price:299,cad:'/month'}};
+let mPkg='launch',mAddon=false;
+
+function openModal(pkg){
+  document.getElementById('checkout-modal').classList.add('open');
+  document.getElementById('modal-confirm').style.display='none';
+  document.getElementById('modal-left').style.display='';
+  document.getElementById('modal-right').style.display='';
+  document.getElementById('modal-box').style.gridTemplateColumns='';
+  mSelPkg(pkg||'launch');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){document.getElementById('checkout-modal').classList.remove('open');document.body.style.overflow='';}
+
+function mSelPkg(id){
+  mPkg=id;
+  document.querySelectorAll('.mpkg').forEach(c=>c.classList.remove('sel'));
+  document.getElementById('mpkg-'+id).classList.add('sel');
+  const elig=(id==='starter'||id==='launch');
+  document.getElementById('maddon-row').style.display=elig?'flex':'none';
+  if(!elig)mAddon=false;
+  updAddon();updSum();
+}
+function mToggleAddon(){mAddon=!mAddon;updAddon();updSum();}
+function updAddon(){
+  document.getElementById('maddon-row').classList.toggle('sel',mAddon);
+  document.getElementById('maddon-cb').textContent=mAddon?'✓':'';
+  document.getElementById('ms-addon-row').style.display=mAddon?'flex':'none';
+}
+function updSum(){
+  const p=pkgs[mPkg];
+  document.getElementById('ms-pkg').textContent=p.name+' — $'+p.price+(p.cad==='/month'?'/mo':' one-time');
+  document.getElementById('ms-tot').textContent='$'+p.price;
+  document.getElementById('ms-cad').textContent=p.cad+(mAddon?' + $199/mo marketing':'');
+}
+
+function processOrder(method){
+  const name=document.getElementById('m-name').value.trim();
+  const email=document.getElementById('m-email').value.trim();
+  if(method==='card'){
+    const card=document.getElementById('m-card').value.replace(/\s/g,'');
+    const exp=document.getElementById('m-exp').value;
+    const cvc=document.getElementById('m-cvc').value;
+    if(!name||!email||card.length<15||exp.length<5||cvc.length<3){alert('Please fill in all payment fields.');return;}
+  }else{if(!name||!email){alert('Please enter your name and email.');return;}}
+  document.getElementById('proc').classList.add('on');
+  setTimeout(()=>{document.getElementById('proc').classList.remove('on');showConfirm(method,name,email);},2200);
+}
+
+function showConfirm(method,name,email){
+  const p=pkgs[mPkg];
+  const num='AON-'+Math.floor(10000+Math.random()*90000);
+  const date=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  const card=document.getElementById('m-card').value;
+  document.getElementById('m-conf-det').innerHTML=`
+    <div class="cdr"><span class="cdk">Order #</span><span>${num}</span></div>
+    <div class="cdr"><span class="cdk">Date</span><span>${date}</span></div>
+    <div class="cdr"><span class="cdk">Package</span><span>${p.name}</span></div>
+    <div class="cdr"><span class="cdk">Paid via</span><span>${method==='apple'?'Apple Pay':'Card ···'+card.slice(-4)}</span></div>
+    <div class="cdr"><span class="cdk">Receipt to</span><span>${email}</span></div>
+    ${mAddon?'<div class="cdr"><span class="cdk">Add-on</span><span>Digital Marketing Care — $199/mo</span></div>':''}
+    <div class="cdr"><span class="cdk">Total charged</span><span><strong>$'+p.price+'</strong>${mAddon?' + $199/mo':''}</span></div>`;
+  document.getElementById('modal-left').style.display='none';
+  document.getElementById('modal-right').style.display='none';
+  document.getElementById('modal-confirm').style.display='block';
+  document.getElementById('modal-box').style.gridTemplateColumns='1fr';
+}
+
+function fmtCard(el){let v=el.value.replace(/\D/g,'').substring(0,16);el.value=v.replace(/(.{4})/g,'$1 ').trim();}
+function fmtExp(el){let v=el.value.replace(/\D/g,'').substring(0,4);if(v.length>=2)v=v.substring(0,2)+' / '+v.substring(2);el.value=v;}
+
+/* ─ CHAT ─ */
+let cwHist=[];
+const cwSys=`You are the AI sales assistant for Aon Stack, powered by AppDirect. You help online businesses choose and get set up with SaaS tools.
+
+Packages:
+1. SaaS Starter Kit — $99 one-time: SaaS product recommendation, purchase/signup guidance, setup checklist, beginner guide, basic templates/prompts, same-day digital delivery. Best for: DIY customers needing direction.
+2. SaaS Launch Kit — $299 one-time: Everything in Starter + business needs review, recommended SaaS setup plan, industry-specific templates, FAQ/customer response templates, 30-min onboarding call, 7-day email support. Best for: small businesses wanting a clear starting system.
+3. Digital Marketing Care — $299/month standalone OR $199/month add-on (for Starter/Launch customers): SEO review, Google Business Profile support, monthly keyword/content suggestions, social media content ideas, email marketing suggestions, monthly performance review + strategy summary.
+
+Your job: Answer questions warmly and clearly. Recommend the right package. Handle objections confidently. Suggest clicking "Get Started" when someone seems ready. Keep replies concise (2-3 short paragraphs max). Never be pushy.`;
+
+function openChat(){
+  document.getElementById('chat-window').classList.add('open');
+  document.getElementById('unread-badge').style.display='none';
+}
+function toggleChat(){
+  const w=document.getElementById('chat-window');
+  w.classList.toggle('open');
+  if(w.classList.contains('open'))document.getElementById('unread-badge').style.display='none';
+}
+
+function cwSend(txt){
+  const inp=document.getElementById('cw-inp');
+  const msg=(txt||inp.value).trim();
+  if(!msg)return;
+  inp.value='';
+  document.getElementById('cw-send-btn').disabled=true;
+  document.getElementById('cw-sugs').style.display='none';
+  const msgs=document.getElementById('cw-msgs');
+
+  const uEl=document.createElement('div');
+  uEl.className='cw-msg user';
+  uEl.innerHTML=`<div class="user-av msg-av">You</div><div class="msg-bub">${esc(msg)}</div>`;
+  msgs.appendChild(uEl);
+  msgs.scrollTop=msgs.scrollHeight;
+
+  const tEl=document.createElement('div');
+  tEl.className='cw-msg ai';
+  tEl.innerHTML=`<div class="ai-av msg-av">AS</div><div class="typing-dots"><span></span><span></span><span></span></div>`;
+  msgs.appendChild(tEl);
+  msgs.scrollTop=msgs.scrollHeight;
+
+  cwHist.push({role:'user',content:msg});
+
+  fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:350,system:cwSys,messages:cwHist})
+  })
+  .then(r=>r.json())
+  .then(d=>{
+    const reply=d.content.map(b=>b.text||'').join('').trim();
+    tEl.remove();
+    const aEl=document.createElement('div');
+    aEl.className='cw-msg ai';
+    aEl.innerHTML=`<div class="ai-av msg-av">AS</div><div class="msg-bub">${fmt(reply)}</div>`;
+    msgs.appendChild(aEl);
+    msgs.scrollTop=msgs.scrollHeight;
+    cwHist.push({role:'assistant',content:reply});
+    document.getElementById('cw-send-btn').disabled=false;
+  })
+  .catch(()=>{
+    tEl.remove();
+    const eEl=document.createElement('div');
+    eEl.className='cw-msg ai';
+    eEl.innerHTML=`<div class="ai-av msg-av">AS</div><div class="msg-bub">Sorry, connection issue. Please try again!</div>`;
+    msgs.appendChild(eEl);
+    msgs.scrollTop=msgs.scrollHeight;
+    document.getElementById('cw-send-btn').disabled=false;
+  });
+}
+
+function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function fmt(t){return esc(t).replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');}
+
+// Proactive chat nudge after 10s
+setTimeout(()=>{
+  const badge=document.getElementById('unread-badge');
+  if(badge&&badge.style.display!=='none'){
+    const msgs=document.getElementById('cw-msgs');
+    const hint=document.createElement('div');
+    hint.className='cw-msg ai';
+    hint.innerHTML=`<div class="ai-av msg-av">AS</div><div class="msg-bub">👋 Not sure which package is right for you? I can help you decide in under a minute — just ask!</div>`;
+    msgs.appendChild(hint);
+  }
+},10000);
+
+// Init
+mSelPkg('launch');
+</script>
+</body>
+</html>
