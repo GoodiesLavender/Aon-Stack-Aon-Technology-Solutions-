@@ -1,6 +1,14 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+.vercel/
+tsconfig.tsbuildinfo
 workspace/
 sandbox/
 .codesandbox/
 .devcontainer/
-node_modules/
-.env
+.DS_Store
+user-uploads/
+
