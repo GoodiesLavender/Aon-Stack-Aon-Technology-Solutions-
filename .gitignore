@@ -1,0 +1,6 @@
+workspace/
+sandbox/
+.codesandbox/
+.devcontainer/
+node_modules/
+.env
