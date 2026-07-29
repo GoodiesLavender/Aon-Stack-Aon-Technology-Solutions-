@@ -164,7 +164,7 @@ Also confirm business placeholders if any mailing address/phone/registration det
 - Request dialog routes to Agreement Review instead of Stripe  
 - Agreement API validates checkboxes + signature  
 - Checkout API rejects missing agreement id  
-- Package pricing unchanged: Website $599 / $299.50 deposit; Workspace $59 / $29.50  
+- Package pricing unchanged: Website $899 / $449.50 deposit; Workspace $59 / $29.50  
 
 ### Still to test after Supabase push + secrets
 - Live agreement insert against Supabase  

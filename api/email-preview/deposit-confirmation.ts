@@ -16,7 +16,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       customer_name: "Jane Smith",
       invoice_number: "AON-2026-000123",
       order_number: "AON-2026-000123",
-      payment_amount: "$299.50",
+      payment_amount: "$449.50",
       payment_date: "July 28, 2026",
       payment_method: "Stripe / Apple Pay",
       payment_status: "Paid",
@@ -24,7 +24,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         {
           name: "Business Website + AI Chatbot Setup — 50% Deposit",
           quantity: 1,
-          amount: "$299.50",
+          amount: "$449.50",
         },
       ],
       request_id: "cs_live_example123",
