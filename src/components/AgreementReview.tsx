@@ -27,6 +27,7 @@ type ServiceView = {
   included: string[];
   notIncluded: string[];
   fullPriceCents: number;
+  regularPriceCents?: number;
   processSteps?: string[];
   clarification?: string;
 };
@@ -55,10 +56,11 @@ export function AgreementReview({ seed, service, onBack }: Props) {
     const { depositCents, remainingCents } = calcDeposit(service.fullPriceCents);
     return {
       full: formatUsd(service.fullPriceCents),
+      regular: service.regularPriceCents != null ? formatUsd(service.regularPriceCents) : null,
       deposit: formatUsd(depositCents),
       remaining: formatUsd(remainingCents),
     };
-  }, [service.fullPriceCents]);
+  }, [service.fullPriceCents, service.regularPriceCents]);
 
   const isWebsite = service.id === "website_chatbot";
 
@@ -192,10 +194,17 @@ export function AgreementReview({ seed, service, onBack }: Props) {
                 <div className="grid gap-2 text-sm">
                   <Row label="Service" value={service.name} />
                   <Row label="Package" value={service.name} />
-                  <Row label="Total professional setup fee" value={pricing.full} strong />
-                  <Row label="Deposit due today" value={pricing.deposit} strong gold />
+                  {pricing.regular && (
+                    <Row label="Regular Price" value={pricing.regular} strike />
+                  )}
+                  <Row
+                    label={pricing.regular ? "Launch Special Price" : "Total professional setup fee"}
+                    value={pricing.full}
+                    strong
+                  />
+                  <Row label="Deposit Required Today (50%)" value={pricing.deposit} strong gold />
                   <Row label="Amount due today" value={pricing.deposit} />
-                  <Row label="Remaining balance" value={pricing.remaining} />
+                  <Row label="Remaining Balance" value={pricing.remaining} />
                   <Row
                     label="Remaining balance due"
                     value={
@@ -442,11 +451,13 @@ function Row({
   value,
   strong,
   gold,
+  strike,
 }: {
   label: string;
   value: string;
   strong?: boolean;
   gold?: boolean;
+  strike?: boolean;
 }) {
   return (
     <div className="flex items-start justify-between gap-4 border-b border-border/60 py-2 last:border-0">
@@ -456,6 +467,7 @@ function Row({
           "text-right",
           strong && "font-semibold text-foreground",
           gold && "font-semibold text-[hsl(var(--gold))]",
+          strike && "line-through decoration-2",
         )}
       >
         {value}

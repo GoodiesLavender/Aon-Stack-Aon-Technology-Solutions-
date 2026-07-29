@@ -82,11 +82,11 @@ export function buildSalesNotification(request) {
       "WEBSITE + CHATBOT PACKAGE NOTES",
       "- A Devs.ai needs assessment is required.",
       "- A separate Devs.ai subscription quote must be prepared.",
-      "- Devs.ai subscription is NOT included in the $399 setup fee.",
+      "- Devs.ai subscription is NOT included in the $599 setup fee.",
       "- No custom AI Agent is included.",
       "- Google Workspace is a separate package.",
       "- Third-party costs (domain, hosting, Devs.ai, etc.) are billed separately.",
-      "- Remaining $199.50 setup balance is due before final launch/handoff.",
+      "- Remaining $299.50 setup balance is due before final launch/handoff.",
       "",
     );
   }

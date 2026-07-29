@@ -42,7 +42,8 @@ export const SERVICES = {
     id: "website_chatbot",
     name: "Business Website + AI Chatbot Setup",
     packageName: "Business Website + AI Chatbot Setup",
-    fullPriceCents: 39900,
+    fullPriceCents: 59900,
+    regularPriceCents: 69900,
     description:
       "50% deposit for Aon Technology professional website and Devs.ai-powered chatbot setup only. Remaining balance due before final launch/handoff. Devs.ai subscriptions, hosting, domain, and other third-party costs are NOT included and are quoted separately.",
     stripeProductName: "Business Website + AI Chatbot Setup — 50% Deposit",

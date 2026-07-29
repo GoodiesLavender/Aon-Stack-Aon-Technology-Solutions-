@@ -43,6 +43,7 @@ type Service = {
   eyebrow: string;
   name: string;
   fullPriceCents: number;
+  regularPriceCents?: number;
   privatePrice: string;
   publicPrice: string;
   summary: string;
@@ -136,11 +137,12 @@ const services: Service[] = [
     id: "website_chatbot",
     eyebrow: "Website + chatbot",
     name: "Business Website + AI Chatbot Setup",
-    fullPriceCents: 39900,
-    privatePrice: "$399.00 full service fee · 50% deposit $199.50 today",
-    publicPrice: "$399 setup · $199.50 deposit today · balance before launch",
+    fullPriceCents: 59900,
+    regularPriceCents: 69900,
+    privatePrice: "$599.00 launch special · 50% deposit $299.50 today",
+    publicPrice: "$599 launch special · $299.50 deposit today · balance before launch",
     summary:
-      "Launch a professional, mobile-friendly business website with a Devs.ai-powered chatbot. The chatbot will be configured using the client’s approved business information to answer common questions, explain services, direct visitors to relevant information, and help collect customer inquiries. The $399 fee is a one-time professional service fee charged by Aon Technology for website creation, chatbot setup, basic deployment assistance, testing, and client handoff. A 50% deposit of $199.50 is required to begin. The remaining balance of $199.50 is due before the final website launch, transfer, or handoff.",
+      "Launch a professional, mobile-friendly business website with a Devs.ai-powered chatbot. The chatbot will be configured using the client’s approved business information to answer common questions, explain services, direct visitors to relevant information, and help collect customer inquiries. The $599 fee is a one-time professional service fee charged by Aon Technology for website creation, chatbot setup, basic deployment assistance, testing, and client handoff. A 50% deposit of $299.50 is required to begin. The remaining balance of $299.50 is due before the final website launch, transfer, or handoff.",
     included: [
       "Initial business discovery and setup consultation",
       "Mobile-friendly business website",
@@ -178,14 +180,14 @@ const services: Service[] = [
     clarification:
       "The website chatbot included in this package is designed to answer common questions, explain business services, provide basic information, direct visitors, and collect inquiries. It is not a custom AI Agent that independently sends emails, manages calendars, updates CRM systems, creates quotes, produces invoices, or performs multi-step business workflows.",
     processSteps: [
-      "Client pays the $199.50 website and chatbot setup deposit.",
+      "Client pays the $299.50 website and chatbot setup deposit.",
       "Aon Technology reviews the client’s business requirements.",
       "Aon Technology determines the appropriate Devs.ai subscription.",
       "A separate Devs.ai subscription quote is sent to the client.",
       "Client reviews and approves the Devs.ai quote.",
-      "Devs.ai subscription is billed separately from the $399 setup fee.",
+      "Devs.ai subscription is billed separately from the $599 setup fee.",
       "Aon Technology builds the website and configures the chatbot.",
-      "Remaining $199.50 setup balance is due before final launch or handoff.",
+      "Remaining $299.50 setup balance is due before final launch or handoff.",
     ],
   },
 ];
@@ -193,15 +195,15 @@ const services: Service[] = [
 const faqs = [
   {
     q: "Do I pay the full setup fee today?",
-    a: "No. Customers pay only a 50% deposit today through Stripe Checkout. For Business Website + AI Chatbot Setup that is $199.50 of the $399.00 fee. The remaining balance is never charged automatically and is due before final launch or handoff.",
+    a: "No. Customers pay only a 50% deposit today through Stripe Checkout. For Business Website + AI Chatbot Setup that is $299.50 of the $599.00 fee. The remaining balance is never charged automatically and is due before final launch or handoff.",
   },
   {
     q: "Is a custom AI Agent included in the website package?",
     a: "No. The website package includes a Devs.ai-powered website chatbot only. It is not a custom AI Agent and does not independently send emails, manage calendars, update CRMs, create quotes, or run multi-step workflows. Custom AI Agents require a separate quote.",
   },
   {
-    q: "Are Devs.ai, hosting, and domain fees included in the $399?",
-    a: "No. The $399 one-time fee covers Aon Technology’s professional website and chatbot setup services only. Devs.ai subscriptions, domain registration, hosting, and other third-party costs are quoted and billed separately.",
+    q: "Are Devs.ai, hosting, and domain fees included in the $599?",
+    a: "No. The $599 one-time fee covers Aon Technology’s professional website and chatbot setup services only. Devs.ai subscriptions, domain registration, hosting, and other third-party costs are quoted and billed separately.",
   },
   {
     q: "Is Google Workspace included with the website package?",
@@ -210,7 +212,7 @@ const faqs = [
 ];
 
 const chatReplies = [
-  "You only pay a 50% deposit today. For the website package that is $199.50 of $399.00. The remaining balance is due before launch and is never charged automatically.",
+  "You only pay a 50% deposit today. For the website package that is $299.50 of $599.00. The remaining balance is due before launch and is never charged automatically.",
   "The Business Website + AI Chatbot package includes a Devs.ai-powered website chatbot — not a custom AI Agent. Devs.ai subscriptions are quoted separately after deposit.",
   "Google Workspace remains a separate package if you need professional business email.",
 ];
@@ -359,8 +361,8 @@ export default function App() {
     const text = [
       "Aon Technology setup request",
       `Service: ${selected.name}`,
-      `Full Service Fee: ${pricing.fullServiceFee}`,
-      `Deposit Due Today: ${pricing.depositDueToday}`,
+      `${selected.regularPriceCents != null ? "Launch Special Price" : "Full Service Fee"}: ${pricing.fullServiceFee}`,
+      `Deposit Required Today (50%): ${pricing.depositDueToday}`,
       `Remaining Balance: ${pricing.remainingBalance}`,
       "Payment type: 50% deposit only (remaining balance NOT charged automatically)",
       isWebsitePackage
@@ -467,7 +469,7 @@ export default function App() {
           <p className="mt-5 text-muted-foreground leading-8">
             {success
               ? isWebsiteOrder
-                ? "Thank you. Your $199.50 deposit has been received."
+                ? "Thank you. Your $299.50 deposit has been received."
                 : "Thank you. Your 50% deposit was received successfully and your setup request has been submitted."
               : "Your deposit payment was not completed. You can return to the website and start Stripe Checkout again whenever you are ready."}
           </p>
@@ -477,12 +479,12 @@ export default function App() {
               {isWebsiteOrder ? (
                 <div className="rounded-xl border border-border bg-background/70 px-4 py-4 text-sm leading-7 text-muted-foreground">
                   <p>
-                    Your total professional setup fee is <strong className="text-foreground">$399.00</strong>, with a
-                    remaining setup balance of <strong className="text-foreground">$199.50</strong>.
+                    Your total professional setup fee is <strong className="text-foreground">$599.00</strong>, with a
+                    remaining setup balance of <strong className="text-foreground">$299.50</strong>.
                   </p>
                   <p className="mt-3">
                     Aon Technology will review your business requirements and send you a separate Devs.ai subscription
-                    quote. Devs.ai and other third-party subscription costs are not included in your $399 setup fee.
+                    quote. Devs.ai and other third-party subscription costs are not included in your $599 setup fee.
                   </p>
                   <p className="mt-3">
                     Your remaining setup balance is due before the final website launch, transfer, or handoff.
@@ -598,7 +600,7 @@ export default function App() {
         <Marquee pauseOnHover className="py-2 [--duration:36s]">
           {[
             "Pay only a 50% deposit today",
-            "Business Website + AI Chatbot Setup — $399 · $199.50 deposit",
+            "Business Website + AI Chatbot Setup — $599 · $299.50 deposit",
             "Devs.ai subscriptions quoted separately",
             "Google Workspace remains a separate package",
           ].map((item) => (
@@ -720,7 +722,7 @@ export default function App() {
             {[
               { n: 2, l: "Focused setup services" },
               { n: 50, l: "Percent deposit today" },
-              { n: 399, l: "Website package setup fee" },
+              { n: 599, l: "Website package setup fee" },
               { n: 0, l: "Automatic remaining charges" },
             ].map((stat) => (
               <div
@@ -768,12 +770,22 @@ export default function App() {
                         <h3 className="font-serif text-3xl font-black leading-tight tracking-tight">{service.name}</h3>
                         <p className="mt-4 text-sm leading-7 text-muted-foreground">{service.summary}</p>
                         <div className="mt-6 grid gap-2 rounded-xl border border-dashed border-[hsl(var(--gold))]/40 bg-[hsl(var(--gold))]/10 p-4 text-sm">
+                          {service.regularPriceCents != null && (
+                            <div className="flex items-center justify-between gap-3">
+                              <span className="text-muted-foreground">Regular Price</span>
+                              <strong className="line-through decoration-2">
+                                {formatUsd(service.regularPriceCents)}
+                              </strong>
+                            </div>
+                          )}
                           <div className="flex items-center justify-between gap-3">
-                            <span className="text-muted-foreground">Full Service Fee</span>
+                            <span className="text-muted-foreground">
+                              {service.regularPriceCents != null ? "Launch Special Price" : "Full Service Fee"}
+                            </span>
                             <strong>{formatUsd(service.fullPriceCents)}</strong>
                           </div>
                           <div className="flex items-center justify-between gap-3">
-                            <span className="text-muted-foreground">Deposit Due Today</span>
+                            <span className="text-muted-foreground">Deposit Required Today (50%)</span>
                             <strong className="text-[hsl(var(--gold))]">{formatUsd(depositCents)}</strong>
                           </div>
                           <div className="flex items-center justify-between gap-3">
@@ -841,7 +853,7 @@ export default function App() {
                             <div className="rounded-xl border border-border p-4">
                               <h4 className="text-sm font-bold">Software Subscriptions and Third-Party Costs</h4>
                               <p className="mt-2 text-sm leading-7 text-muted-foreground">
-                                The $399 one-time fee covers Aon Technology’s professional website and chatbot setup
+                                The $599 one-time fee covers Aon Technology’s professional website and chatbot setup
                                 services only. It does not include Devs.ai subscriptions, domain registration, hosting,
                                 or other third-party software costs. After the 50% deposit is received, Aon Technology
                                 will review the client’s requirements and provide a separate Devs.ai subscription quote.
@@ -921,7 +933,7 @@ export default function App() {
                   [
                     Globe,
                     "Need a website + chatbot?",
-                    "Choose Business Website + AI Chatbot Setup ($399 · $199.50 deposit). Devs.ai subscriptions are quoted separately after deposit.",
+                    "Choose Business Website + AI Chatbot Setup ($599 · $299.50 deposit). Devs.ai subscriptions are quoted separately after deposit.",
                   ],
                   [
                     ShieldCheck,
@@ -1167,16 +1179,24 @@ export default function App() {
                 <span className="text-muted-foreground">Service</span>
                 <strong className="text-right">{selected.name}</strong>
               </div>
+              {selected.regularPriceCents != null && (
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-muted-foreground">Regular Price</span>
+                  <strong className="line-through decoration-2">{formatUsd(selected.regularPriceCents)}</strong>
+                </div>
+              )}
               <div className="flex items-center justify-between gap-3">
-                <span className="text-muted-foreground">Total professional setup fee</span>
+                <span className="text-muted-foreground">
+                  {selected.regularPriceCents != null ? "Launch Special Price" : "Total professional setup fee"}
+                </span>
                 <strong>{pricing.fullServiceFee}</strong>
               </div>
               <div className="flex items-center justify-between gap-3">
-                <span className="text-muted-foreground">Deposit due today</span>
+                <span className="text-muted-foreground">Deposit Required Today (50%)</span>
                 <strong className="text-[hsl(var(--gold))]">{pricing.depositDueToday}</strong>
               </div>
               <div className="flex items-center justify-between gap-3">
-                <span className="text-muted-foreground">Remaining setup balance</span>
+                <span className="text-muted-foreground">Remaining Balance</span>
                 <strong>{pricing.remainingBalance}</strong>
               </div>
               {isWebsitePackage && (
@@ -1216,7 +1236,7 @@ export default function App() {
                   onChange={(e) => setTermsAccepted(e.target.checked)}
                 />
                 <span className="text-muted-foreground">
-                  I understand that the $199.50 payment is a 50% deposit toward Aon Technology’s $399 professional setup
+                  I understand that the $299.50 payment is a 50% deposit toward Aon Technology’s $599 professional setup
                   fee. Devs.ai subscriptions, hosting, domain registration, Google Workspace, and other third-party
                   costs are not included and may require separate approval and payment.
                 </span>

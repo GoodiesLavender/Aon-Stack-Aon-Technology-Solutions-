@@ -4,7 +4,7 @@
 - Public marketing site with **50% deposit** Stripe Checkout (Live)
 - Packages:
   - **Google Workspace Setup** — $59.00 · deposit $29.50
-  - **Business Website + AI Chatbot Setup** — $399.00 · deposit **$199.50**
+  - **Business Website + AI Chatbot Setup** — $599.00 · deposit **$299.50**
 - After `checkout.session.completed`:
   1. Verify Stripe signature
   2. Re-fetch session from Stripe (amount source of truth)
@@ -65,10 +65,10 @@ Backend tables and webhook are ready. Protected `/admin/orders` + `/admin/legal`
 ---
 
 ## Test checklist
-- [ ] Website package shows **$399.00** full fee
-- [ ] Deposit shows **$199.50**
-- [ ] Stripe Checkout charges **exactly $199.50** (19950 cents)
-- [ ] Remaining balance calculated **$199.50**
+- [ ] Website package shows **$599.00** full fee
+- [ ] Deposit shows **$299.50**
+- [ ] Stripe Checkout charges **exactly $299.50** (29950 cents)
+- [ ] Remaining balance calculated **$299.50**
 - [ ] Devs.ai marked separate / not included
 - [ ] No custom AI Agent included (copy + flags)
 - [ ] Google Workspace remains separate package at $59
