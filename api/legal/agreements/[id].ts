@@ -1,11 +1,17 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { formatUsd } from "../../_lib/services.js";
 import { getAgreementByPublicId, getAgreementByReference } from "../../_lib/legal.js";
+import { tokensMatch } from "../../_lib/tokens.js";
+import { resolveAdminFromRequest } from "../../_lib/admin-auth.js";
 
 /**
- * Public-safe agreement receipt lookup by public_id or AGR- reference.
- * Returns summary fields + snapshot for the owner success/download flow.
- * Does not expose admin notes or unrelated customer lists.
+ * Agreement receipt lookup by public_id or AGR- reference.
+ *
+ * Security (IDOR fix):
+ * - Unauthenticated callers MUST supply access_token (query or header).
+ * - Token is compared with timing-safe equality against the stored secret.
+ * - Staff with a valid admin JWT may read without the customer token.
+ * - No list/enumeration endpoint.
  */
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
@@ -17,6 +23,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const id = String(req.query.id || "").trim();
     if (!id) return res.status(400).json({ error: "Agreement id required." });
 
+    const providedToken = String(
+      req.query.access_token ||
+        req.query.token ||
+        req.headers["x-agreement-token"] ||
+        "",
+    ).trim();
+
     let row = null;
     if (id.startsWith("AGR-")) {
       row = await getAgreementByReference(id);
@@ -24,9 +37,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       row = await getAgreementByPublicId(id);
     }
 
+    // Uniform 404 to avoid existence oracle beyond id knowledge
     if (!row) return res.status(404).json({ error: "Agreement not found." });
 
-    // Only expose after acceptance; never list enumeration.
+    const staff = await resolveAdminFromRequest(req, ["admin", "support", "read_only"]);
+    const isStaff = !staff.error && !!staff.admin;
+    const storedToken = row.access_token || "";
+    // Legacy rows without a token: deny public access (staff JWT only).
+    const tokenOk = storedToken ? tokensMatch(providedToken, storedToken) : false;
+
+    if (!isStaff && !tokenOk) {
+      return res.status(401).json({
+        error: "Agreement access token required.",
+      });
+    }
+
     return res.status(200).json({
       publicId: row.public_id,
       agreementReference: row.agreement_reference,

@@ -1,4 +1,4 @@
-import { createHash, randomUUID } from "node:crypto";
+import { createHash, randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
 import { supabaseAdmin } from "./supabase-admin.js";
 import {
   LEGAL_DOCUMENTS,
@@ -192,6 +192,7 @@ export async function createCustomerAgreement(payload, reqMeta = {}) {
   const snapshotJson = JSON.stringify(snapshot);
   const agreementReference = await nextAgreementReference();
   const publicId = randomUUID();
+  const accessToken = createAgreementAccessToken();
   const signatureDate =
     payload.signatureDate ||
     new Date().toLocaleDateString("en-US", {
@@ -204,7 +205,10 @@ export async function createCustomerAgreement(payload, reqMeta = {}) {
   const row = {
     public_id: publicId,
     agreement_reference: agreementReference,
+    access_token: accessToken,
     purchase_id: null,
+    // auth_user_id left null for guest checkout; server may link later after login
+    auth_user_id: payload.authUserId ? String(payload.authUserId) : null,
     customer_name: customerName,
     business_name: String(payload.businessName || "").trim(),
     customer_title: String(payload.customerTitle || "").trim(),
@@ -260,6 +264,8 @@ export async function createCustomerAgreement(payload, reqMeta = {}) {
     id: data.id,
     publicId: data.public_id,
     agreementReference: data.agreement_reference,
+    // Returned once at creation for capability-URL style access. Not listed elsewhere.
+    accessToken,
     agreementStatus: data.agreement_status,
     paymentStatus: data.payment_status,
     serviceId: data.package_id,

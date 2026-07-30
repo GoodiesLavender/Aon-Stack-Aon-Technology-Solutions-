@@ -144,6 +144,20 @@ export function AgreementReview({ seed, service, onBack }: Props) {
       const agreement = await agreeRes.json();
       if (!agreeRes.ok) throw new Error(agreement.error || "Unable to save agreement.");
 
+      // Store capability token for the success-page receipt (IDOR mitigation).
+      // Token is high-entropy and returned only at creation — never listed by the API.
+      try {
+        if (agreement.publicId && agreement.accessToken) {
+          sessionStorage.setItem(
+            `aon_agreement_token_${agreement.publicId}`,
+            String(agreement.accessToken),
+          );
+          sessionStorage.setItem("aon_last_agreement_id", String(agreement.publicId));
+        }
+      } catch {
+        // sessionStorage may be unavailable; checkout can still proceed.
+      }
+
       setStatus("redirecting");
       const checkoutRes = await fetch("/api/create-checkout-session", {
         method: "POST",

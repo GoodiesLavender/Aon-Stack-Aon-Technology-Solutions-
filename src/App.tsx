@@ -298,12 +298,24 @@ export default function App() {
 
       if (agreementIdParam) {
         try {
-          const receipt = await api.get<AgreementReceipt>(
-            `/api/legal/agreements/${encodeURIComponent(agreementIdParam)}`,
-          );
-          if (!cancelled) setAgreementReceipt(receipt);
+          let accessToken = "";
+          try {
+            accessToken =
+              sessionStorage.getItem(`aon_agreement_token_${agreementIdParam}`) || "";
+          } catch {
+            accessToken = "";
+          }
+          if (!accessToken) {
+            // Without the capability token, do not call the endpoint (prevents pointless 401 noise).
+            // Staff can still open receipts with a Bearer admin JWT from future admin UI.
+          } else {
+            const receipt = await api.get<AgreementReceipt>(
+              `/api/legal/agreements/${encodeURIComponent(agreementIdParam)}?access_token=${encodeURIComponent(accessToken)}`,
+            );
+            if (!cancelled) setAgreementReceipt(receipt);
+          }
         } catch {
-          // optional
+          // optional — payment success still stands without PDF receipt hydrate
         }
       }
     }

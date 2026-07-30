@@ -1,30 +1,69 @@
-import { pgTable, serial, text, integer, boolean, timestamp } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+import { pgTable, serial, text, integer, boolean, timestamp, pgPolicy } from "drizzle-orm/pg-core";
 import { pgFunction } from "./_pg-function";
+
+/**
+ * SECURITY MODEL (2026-07-29 audit)
+ * ---------------------------------
+ * - All current app traffic uses the service-role key from api/* only.
+ * - Platform enables RLS on every table at push time.
+ * - Policies below intentionally:
+ *     • Give anon ZERO access to private customer data
+ *     • Give authenticated users access ONLY when auth_user_id = auth.uid()
+ *     • Give admin/support/read_only access via admin_profiles (server-managed)
+ *     • Never allow customers to write admin_profiles.role
+ * - auth_user_id is nullable: checkout today is guest/email based. When customer
+ *   login is added later, link rows by auth_user_id. Do NOT use auth.uid() = id
+ *   (id is a serial surrogate key, not a Supabase user id).
+ *
+ * Helper expressions reused in policies:
+ *   auth.uid()::text  — current JWT subject
+ *   is_staff()        — admin_profiles lookup (defined below)
+ */
 
 // ---------------------------------------------------------------------------
 // Legacy deposit_requests — kept for backward compatibility with existing rows.
 // New paid deposits are written primarily to `orders` (see below).
 // ---------------------------------------------------------------------------
-export const deposit_requests = pgTable("deposit_requests", {
-  id: serial("id").primaryKey(),
-  reference_number: text("reference_number").notNull().unique(),
-  customer_name: text("customer_name").notNull(),
-  email: text("email").notNull(),
-  business_name: text("business_name"),
-  number_of_users: text("number_of_users"),
-  selected_service: text("selected_service").notNull(),
-  service_id: text("service_id").notNull(),
-  business_needs: text("business_needs"),
-  full_service_price_cents: integer("full_service_price_cents").notNull(),
-  deposit_paid_cents: integer("deposit_paid_cents").notNull(),
-  remaining_balance_cents: integer("remaining_balance_cents").notNull(),
-  stripe_payment_id: text("stripe_payment_id"),
-  checkout_session_id: text("checkout_session_id").notNull().unique(),
-  status: text("status").notNull().default("deposit_paid"),
-  sales_email_sent: boolean("sales_email_sent").notNull().default(false),
-  customer_email_sent: boolean("customer_email_sent").notNull().default(false),
-  created_at: timestamp("created_at", { withTimezone: true }).defaultNow(),
-});
+export const deposit_requests = pgTable(
+  "deposit_requests",
+  {
+    id: serial("id").primaryKey(),
+    reference_number: text("reference_number").notNull().unique(),
+    customer_name: text("customer_name").notNull(),
+    email: text("email").notNull(),
+    business_name: text("business_name"),
+    number_of_users: text("number_of_users"),
+    selected_service: text("selected_service").notNull(),
+    service_id: text("service_id").notNull(),
+    business_needs: text("business_needs"),
+    full_service_price_cents: integer("full_service_price_cents").notNull(),
+    deposit_paid_cents: integer("deposit_paid_cents").notNull(),
+    remaining_balance_cents: integer("remaining_balance_cents").notNull(),
+    stripe_payment_id: text("stripe_payment_id"),
+    checkout_session_id: text("checkout_session_id").notNull().unique(),
+    // Optional link to Supabase Auth user (set only by server when known)
+    auth_user_id: text("auth_user_id"),
+    status: text("status").notNull().default("deposit_paid"),
+    sales_email_sent: boolean("sales_email_sent").notNull().default(false),
+    customer_email_sent: boolean("customer_email_sent").notNull().default(false),
+    created_at: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  },
+  (table) => [
+    pgPolicy("deposit_requests_select_own", {
+      as: "permissive",
+      for: "select",
+      to: "authenticated",
+      using: sql`${table.auth_user_id} is not null and ${table.auth_user_id} = (select auth.uid()::text)`,
+    }),
+    pgPolicy("deposit_requests_select_staff", {
+      as: "permissive",
+      for: "select",
+      to: "authenticated",
+      using: sql`is_staff(ARRAY['admin','support','read_only'])`,
+    }),
+  ],
+);
 
 // ---------------------------------------------------------------------------
 // Purchase ID sequence counter — AON-YYYY-XXXXXX
@@ -35,6 +74,7 @@ export const purchase_id_counters = pgTable("purchase_id_counters", {
   last_seq: integer("last_seq").notNull().default(0),
   updated_at: timestamp("updated_at", { withTimezone: true }).defaultNow(),
 });
+// No client policies — service_role only.
 
 // Atomic next-id helper installed via Push to Supabase.
 export const next_purchase_id = pgFunction("next_purchase_id", {
@@ -59,94 +99,205 @@ export const next_purchase_id = pgFunction("next_purchase_id", {
 
 // ---------------------------------------------------------------------------
 // orders — source of truth for paid deposits / customer projects
-// Amounts stored in integer cents. Public/anon have no RLS policies
-// (service-role only via /api/*).
 // ---------------------------------------------------------------------------
-export const orders = pgTable("orders", {
-  id: serial("id").primaryKey(),
-  // Public UUID-style id for external references (text for platform compatibility)
-  public_id: text("public_id").notNull().unique(),
-  // Official purchase reference: AON-YYYY-XXXXXX
-  purchase_id: text("purchase_id").notNull().unique(),
-  stripe_checkout_session_id: text("stripe_checkout_session_id").notNull().unique(),
-  stripe_payment_intent_id: text("stripe_payment_intent_id"),
-  customer_name: text("customer_name").notNull(),
-  customer_email: text("customer_email").notNull(),
-  customer_phone: text("customer_phone"),
-  customer_company: text("customer_company"),
-  customer_domain: text("customer_domain"),
-  number_of_users: text("number_of_users"),
-  business_needs: text("business_needs"),
-  service_id: text("service_id").notNull(),
-  service_name: text("service_name").notNull(),
-  package_name: text("package_name").notNull(),
-  // Integer cents
-  total_service_price_cents: integer("total_service_price_cents").notNull(),
-  deposit_amount_paid_cents: integer("deposit_amount_paid_cents").notNull(),
-  remaining_balance_cents: integer("remaining_balance_cents").notNull(),
-  currency: text("currency").notNull().default("USD"),
-  payment_status: text("payment_status").notNull().default("Deposit Paid"),
-  project_status: text("project_status").notNull().default("Deposit Received"),
-  appdirect_quote_status: text("appdirect_quote_status").notNull().default("Not Started"),
-  devs_ai_quote_status: text("devs_ai_quote_status").notNull().default("Pending Review"),
-  appdirect_quote_sent_at: timestamp("appdirect_quote_sent_at", { withTimezone: true }),
-  appdirect_subscription_activated_at: timestamp("appdirect_subscription_activated_at", {
-    withTimezone: true,
-  }),
-  remaining_balance_paid_at: timestamp("remaining_balance_paid_at", { withTimezone: true }),
-  expected_start_date: text("expected_start_date"),
-  expected_completion_date: text("expected_completion_date"),
-  stripe_receipt_url: text("stripe_receipt_url"),
-  // Feature flags captured at order time
-  devs_ai_subscription_included: boolean("devs_ai_subscription_included").notNull().default(false),
-  custom_ai_agent_included: boolean("custom_ai_agent_included").notNull().default(false),
-  google_workspace_included: boolean("google_workspace_included").notNull().default(false),
-  third_party_costs_included: boolean("third_party_costs_included").notNull().default(false),
-  assigned_admin_id: text("assigned_admin_id"),
-  sales_email_sent: boolean("sales_email_sent").notNull().default(false),
-  customer_email_sent: boolean("customer_email_sent").notNull().default(false),
-  created_at: timestamp("created_at", { withTimezone: true }).defaultNow(),
-  updated_at: timestamp("updated_at", { withTimezone: true }).defaultNow(),
-});
+export const orders = pgTable(
+  "orders",
+  {
+    id: serial("id").primaryKey(),
+    public_id: text("public_id").notNull().unique(),
+    purchase_id: text("purchase_id").notNull().unique(),
+    stripe_checkout_session_id: text("stripe_checkout_session_id").notNull().unique(),
+    stripe_payment_intent_id: text("stripe_payment_intent_id"),
+    customer_name: text("customer_name").notNull(),
+    customer_email: text("customer_email").notNull(),
+    customer_phone: text("customer_phone"),
+    customer_company: text("customer_company"),
+    customer_domain: text("customer_domain"),
+    number_of_users: text("number_of_users"),
+    business_needs: text("business_needs"),
+    service_id: text("service_id").notNull(),
+    service_name: text("service_name").notNull(),
+    package_name: text("package_name").notNull(),
+    total_service_price_cents: integer("total_service_price_cents").notNull(),
+    deposit_amount_paid_cents: integer("deposit_amount_paid_cents").notNull(),
+    remaining_balance_cents: integer("remaining_balance_cents").notNull(),
+    currency: text("currency").notNull().default("USD"),
+    payment_status: text("payment_status").notNull().default("Deposit Paid"),
+    project_status: text("project_status").notNull().default("Deposit Received"),
+    appdirect_quote_status: text("appdirect_quote_status").notNull().default("Not Started"),
+    devs_ai_quote_status: text("devs_ai_quote_status").notNull().default("Pending Review"),
+    appdirect_quote_sent_at: timestamp("appdirect_quote_sent_at", { withTimezone: true }),
+    appdirect_subscription_activated_at: timestamp("appdirect_subscription_activated_at", {
+      withTimezone: true,
+    }),
+    remaining_balance_paid_at: timestamp("remaining_balance_paid_at", { withTimezone: true }),
+    expected_start_date: text("expected_start_date"),
+    expected_completion_date: text("expected_completion_date"),
+    stripe_receipt_url: text("stripe_receipt_url"),
+    devs_ai_subscription_included: boolean("devs_ai_subscription_included").notNull().default(false),
+    custom_ai_agent_included: boolean("custom_ai_agent_included").notNull().default(false),
+    google_workspace_included: boolean("google_workspace_included").notNull().default(false),
+    third_party_costs_included: boolean("third_party_costs_included").notNull().default(false),
+    assigned_admin_id: text("assigned_admin_id"),
+    // Optional Supabase Auth linkage (server-set only)
+    auth_user_id: text("auth_user_id"),
+    sales_email_sent: boolean("sales_email_sent").notNull().default(false),
+    customer_email_sent: boolean("customer_email_sent").notNull().default(false),
+    created_at: timestamp("created_at", { withTimezone: true }).defaultNow(),
+    updated_at: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+  },
+  (table) => [
+    pgPolicy("orders_select_own", {
+      as: "permissive",
+      for: "select",
+      to: "authenticated",
+      using: sql`${table.auth_user_id} is not null and ${table.auth_user_id} = (select auth.uid()::text)`,
+    }),
+    pgPolicy("orders_select_staff", {
+      as: "permissive",
+      for: "select",
+      to: "authenticated",
+      using: sql`is_staff(ARRAY['admin','support','read_only'])`,
+    }),
+    // Staff may update project workflow fields; customers cannot update orders via client.
+    pgPolicy("orders_update_staff", {
+      as: "permissive",
+      for: "update",
+      to: "authenticated",
+      using: sql`is_staff(ARRAY['admin','support'])`,
+      withCheck: sql`is_staff(ARRAY['admin','support'])`,
+    }),
+  ],
+);
 
 // ---------------------------------------------------------------------------
 // order_status_history — timeline of project_status changes
 // ---------------------------------------------------------------------------
-export const order_status_history = pgTable("order_status_history", {
-  id: serial("id").primaryKey(),
-  order_id: integer("order_id").notNull(),
-  previous_status: text("previous_status"),
-  new_status: text("new_status").notNull(),
-  note: text("note"),
-  changed_by: text("changed_by"),
-  created_at: timestamp("created_at", { withTimezone: true }).defaultNow(),
-});
+export const order_status_history = pgTable(
+  "order_status_history",
+  {
+    id: serial("id").primaryKey(),
+    order_id: integer("order_id").notNull(),
+    previous_status: text("previous_status"),
+    new_status: text("new_status").notNull(),
+    note: text("note"),
+    changed_by: text("changed_by"),
+    created_at: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  },
+  () => [
+    pgPolicy("order_status_history_select_staff", {
+      as: "permissive",
+      for: "select",
+      to: "authenticated",
+      using: sql`is_staff(ARRAY['admin','support','read_only'])`,
+    }),
+    pgPolicy("order_status_history_select_own_order", {
+      as: "permissive",
+      for: "select",
+      to: "authenticated",
+      using: sql`exists (
+        select 1 from orders o
+        where o.id = order_id
+          and o.auth_user_id is not null
+          and o.auth_user_id = (select auth.uid()::text)
+      )`,
+    }),
+    pgPolicy("order_status_history_insert_staff", {
+      as: "permissive",
+      for: "insert",
+      to: "authenticated",
+      withCheck: sql`is_staff(ARRAY['admin','support'])`,
+    }),
+  ],
+);
 
 // ---------------------------------------------------------------------------
 // internal_notes — staff-only notes (never sent to customers)
 // ---------------------------------------------------------------------------
-export const internal_notes = pgTable("internal_notes", {
-  id: serial("id").primaryKey(),
-  order_id: integer("order_id").notNull(),
-  note: text("note").notNull(),
-  created_by: text("created_by"),
-  created_at: timestamp("created_at", { withTimezone: true }).defaultNow(),
-  updated_at: timestamp("updated_at", { withTimezone: true }).defaultNow(),
-});
+export const internal_notes = pgTable(
+  "internal_notes",
+  {
+    id: serial("id").primaryKey(),
+    order_id: integer("order_id").notNull(),
+    note: text("note").notNull(),
+    created_by: text("created_by"),
+    created_at: timestamp("created_at", { withTimezone: true }).defaultNow(),
+    updated_at: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+  },
+  () => [
+    pgPolicy("internal_notes_select_staff", {
+      as: "permissive",
+      for: "select",
+      to: "authenticated",
+      using: sql`is_staff(ARRAY['admin','support'])`,
+    }),
+    pgPolicy("internal_notes_insert_staff", {
+      as: "permissive",
+      for: "insert",
+      to: "authenticated",
+      withCheck: sql`is_staff(ARRAY['admin','support'])`,
+    }),
+    pgPolicy("internal_notes_update_staff", {
+      as: "permissive",
+      for: "update",
+      to: "authenticated",
+      using: sql`is_staff(ARRAY['admin','support'])`,
+      withCheck: sql`is_staff(ARRAY['admin','support'])`,
+    }),
+    pgPolicy("internal_notes_delete_admin", {
+      as: "permissive",
+      for: "delete",
+      to: "authenticated",
+      using: sql`is_staff(ARRAY['admin'])`,
+    }),
+  ],
+);
 
 // ---------------------------------------------------------------------------
 // admin_profiles — role-based access for /admin/*
 // Roles: admin | support | read_only
+// CRITICAL: customers must never INSERT/UPDATE this table via client keys.
 // ---------------------------------------------------------------------------
-export const admin_profiles = pgTable("admin_profiles", {
-  id: serial("id").primaryKey(),
-  user_id: text("user_id").notNull().unique(),
-  email: text("email").notNull(),
-  display_name: text("display_name"),
-  role: text("role").notNull().default("read_only"),
-  is_active: boolean("is_active").notNull().default(true),
-  created_at: timestamp("created_at", { withTimezone: true }).defaultNow(),
-  updated_at: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+export const admin_profiles = pgTable(
+  "admin_profiles",
+  {
+    id: serial("id").primaryKey(),
+    // Must store Supabase auth.users.id as text
+    user_id: text("user_id").notNull().unique(),
+    email: text("email").notNull(),
+    display_name: text("display_name"),
+    role: text("role").notNull().default("read_only"),
+    is_active: boolean("is_active").notNull().default(true),
+    created_at: timestamp("created_at", { withTimezone: true }).defaultNow(),
+    updated_at: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+  },
+  (table) => [
+    // Staff can read their own profile row only (not other admins' rows via client).
+    pgPolicy("admin_profiles_select_self", {
+      as: "permissive",
+      for: "select",
+      to: "authenticated",
+      using: sql`${table.user_id} = (select auth.uid()::text)`,
+    }),
+    // Super-admin listing of staff only via service role or future admin-only RPC.
+    // No INSERT / UPDATE / DELETE policies for authenticated → privilege escalation blocked.
+  ],
+);
+
+// Staff check used by policies (SECURITY INVOKER — runs as caller).
+export const is_staff = pgFunction("is_staff", {
+  args: "allowed_roles text[] DEFAULT ARRAY['admin','support','read_only']",
+  returns: "boolean",
+  language: "sql",
+  body: `
+    SELECT EXISTS (
+      SELECT 1
+      FROM admin_profiles ap
+      WHERE ap.user_id = (SELECT auth.uid()::text)
+        AND ap.is_active = true
+        AND ap.role = ANY (allowed_roles)
+    )
+  `,
 });
 
 // ---------------------------------------------------------------------------
@@ -159,24 +310,43 @@ export const phone_verify_attempts = pgTable("phone_verify_attempts", {
   success: boolean("success").notNull().default(false),
   created_at: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
+// No client policies — service_role only.
 
 // ---------------------------------------------------------------------------
 // Legal Pack — versioned documents + immutable customer agreement snapshots
 // ---------------------------------------------------------------------------
-export const legal_documents = pgTable("legal_documents", {
-  id: serial("id").primaryKey(),
-  document_type: text("document_type").notNull(),
-  title: text("title").notNull(),
-  version: text("version").notNull(),
-  effective_at: text("effective_at").notNull(),
-  published_at: text("published_at"),
-  content_html: text("content_html").notNull(),
-  content_text: text("content_text").notNull(),
-  content_hash: text("content_hash").notNull(),
-  is_active: boolean("is_active").notNull().default(true),
-  created_at: timestamp("created_at", { withTimezone: true }).defaultNow(),
-  updated_at: timestamp("updated_at", { withTimezone: true }).defaultNow(),
-});
+export const legal_documents = pgTable(
+  "legal_documents",
+  {
+    id: serial("id").primaryKey(),
+    document_type: text("document_type").notNull(),
+    title: text("title").notNull(),
+    version: text("version").notNull(),
+    effective_at: text("effective_at").notNull(),
+    published_at: text("published_at"),
+    content_html: text("content_html").notNull(),
+    content_text: text("content_text").notNull(),
+    content_hash: text("content_hash").notNull(),
+    is_active: boolean("is_active").notNull().default(true),
+    created_at: timestamp("created_at", { withTimezone: true }).defaultNow(),
+    updated_at: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+  },
+  (table) => [
+    // Public legal text may be read by anyone (also shipped in app code).
+    pgPolicy("legal_documents_select_active_public", {
+      as: "permissive",
+      for: "select",
+      to: "anon",
+      using: sql`${table.is_active} = true`,
+    }),
+    pgPolicy("legal_documents_select_active_auth", {
+      as: "permissive",
+      for: "select",
+      to: "authenticated",
+      using: sql`${table.is_active} = true`,
+    }),
+  ],
+);
 
 export const agreement_id_counters = pgTable("agreement_id_counters", {
   id: serial("id").primaryKey(),
@@ -184,6 +354,7 @@ export const agreement_id_counters = pgTable("agreement_id_counters", {
   last_seq: integer("last_seq").notNull().default(0),
   updated_at: timestamp("updated_at", { withTimezone: true }).defaultNow(),
 });
+// No client policies — service_role only.
 
 export const next_agreement_id = pgFunction("next_agreement_id", {
   args: "",
@@ -205,56 +376,81 @@ export const next_agreement_id = pgFunction("next_agreement_id", {
   `,
 });
 
-export const customer_agreements = pgTable("customer_agreements", {
-  id: serial("id").primaryKey(),
-  public_id: text("public_id").notNull().unique(),
-  agreement_reference: text("agreement_reference").notNull().unique(),
-  purchase_id: text("purchase_id"),
-  customer_name: text("customer_name").notNull(),
-  business_name: text("business_name"),
-  customer_title: text("customer_title"),
-  customer_email: text("customer_email").notNull(),
-  customer_phone: text("customer_phone"),
-  customer_domain: text("customer_domain"),
-  package_id: text("package_id").notNull(),
-  package_name: text("package_name").notNull(),
-  service_name: text("service_name").notNull(),
-  deliverables_snapshot: text("deliverables_snapshot").notNull(),
-  exclusions_snapshot: text("exclusions_snapshot").notNull(),
-  customer_responsibilities_snapshot: text("customer_responsibilities_snapshot").notNull(),
-  timeline_snapshot: text("timeline_snapshot").notNull(),
-  total_service_price_cents: integer("total_service_price_cents").notNull(),
-  deposit_amount_cents: integer("deposit_amount_cents").notNull(),
-  amount_paid_today_cents: integer("amount_paid_today_cents").notNull(),
-  remaining_balance_cents: integer("remaining_balance_cents").notNull(),
-  currency: text("currency").notNull().default("USD"),
-  refund_summary_snapshot: text("refund_summary_snapshot").notNull(),
-  third_party_cost_summary_snapshot: text("third_party_cost_summary_snapshot").notNull(),
-  accepted_document_versions: text("accepted_document_versions").notNull(),
-  accepted_document_hashes: text("accepted_document_hashes").notNull(),
-  full_agreement_snapshot: text("full_agreement_snapshot").notNull(),
-  electronic_signature: text("electronic_signature").notNull(),
-  electronic_signature_consent_text: text("electronic_signature_consent_text").notNull(),
-  accepted_at: timestamp("accepted_at", { withTimezone: true }).defaultNow(),
-  signature_date: text("signature_date").notNull(),
-  ip_address: text("ip_address"),
-  user_agent: text("user_agent"),
-  stripe_checkout_session_id: text("stripe_checkout_session_id"),
-  stripe_payment_intent_id: text("stripe_payment_intent_id"),
-  payment_status: text("payment_status").notNull().default("pending"),
-  agreement_status: text("agreement_status").notNull().default("accepted_pending_payment"),
-  confirmation_email_sent: boolean("confirmation_email_sent").notNull().default(false),
-  confirmation_email_sent_at: timestamp("confirmation_email_sent_at", { withTimezone: true }),
-  marketing_opt_in: boolean("marketing_opt_in").notNull().default(false),
-  checkbox_order_review: boolean("checkbox_order_review").notNull().default(false),
-  checkbox_third_party: boolean("checkbox_third_party").notNull().default(false),
-  checkbox_legal_policies: boolean("checkbox_legal_policies").notNull().default(false),
-  checkbox_esign: boolean("checkbox_esign").notNull().default(false),
-  business_needs: text("business_needs"),
-  number_of_users: text("number_of_users"),
-  created_at: timestamp("created_at", { withTimezone: true }).defaultNow(),
-  updated_at: timestamp("updated_at", { withTimezone: true }).defaultNow(),
-});
+export const customer_agreements = pgTable(
+  "customer_agreements",
+  {
+    id: serial("id").primaryKey(),
+    public_id: text("public_id").notNull().unique(),
+    agreement_reference: text("agreement_reference").notNull().unique(),
+    // High-entropy secret required to fetch the agreement via public API (IDOR mitigation).
+    // Returned once at creation; never listed. Not a password — treat like a capability URL token.
+    // Nullable only so existing pre-security rows can migrate without destructive backfill;
+    // every NEW agreement sets this. Legacy null tokens are staff-only via API.
+    access_token: text("access_token").unique(),
+    purchase_id: text("purchase_id"),
+    customer_name: text("customer_name").notNull(),
+    business_name: text("business_name"),
+    customer_title: text("customer_title"),
+    customer_email: text("customer_email").notNull(),
+    customer_phone: text("customer_phone"),
+    customer_domain: text("customer_domain"),
+    package_id: text("package_id").notNull(),
+    package_name: text("package_name").notNull(),
+    service_name: text("service_name").notNull(),
+    deliverables_snapshot: text("deliverables_snapshot").notNull(),
+    exclusions_snapshot: text("exclusions_snapshot").notNull(),
+    customer_responsibilities_snapshot: text("customer_responsibilities_snapshot").notNull(),
+    timeline_snapshot: text("timeline_snapshot").notNull(),
+    total_service_price_cents: integer("total_service_price_cents").notNull(),
+    deposit_amount_cents: integer("deposit_amount_cents").notNull(),
+    amount_paid_today_cents: integer("amount_paid_today_cents").notNull(),
+    remaining_balance_cents: integer("remaining_balance_cents").notNull(),
+    currency: text("currency").notNull().default("USD"),
+    refund_summary_snapshot: text("refund_summary_snapshot").notNull(),
+    third_party_cost_summary_snapshot: text("third_party_cost_summary_snapshot").notNull(),
+    accepted_document_versions: text("accepted_document_versions").notNull(),
+    accepted_document_hashes: text("accepted_document_hashes").notNull(),
+    full_agreement_snapshot: text("full_agreement_snapshot").notNull(),
+    electronic_signature: text("electronic_signature").notNull(),
+    electronic_signature_consent_text: text("electronic_signature_consent_text").notNull(),
+    accepted_at: timestamp("accepted_at", { withTimezone: true }).defaultNow(),
+    signature_date: text("signature_date").notNull(),
+    ip_address: text("ip_address"),
+    user_agent: text("user_agent"),
+    stripe_checkout_session_id: text("stripe_checkout_session_id"),
+    stripe_payment_intent_id: text("stripe_payment_intent_id"),
+    payment_status: text("payment_status").notNull().default("pending"),
+    agreement_status: text("agreement_status").notNull().default("accepted_pending_payment"),
+    confirmation_email_sent: boolean("confirmation_email_sent").notNull().default(false),
+    confirmation_email_sent_at: timestamp("confirmation_email_sent_at", { withTimezone: true }),
+    marketing_opt_in: boolean("marketing_opt_in").notNull().default(false),
+    checkbox_order_review: boolean("checkbox_order_review").notNull().default(false),
+    checkbox_third_party: boolean("checkbox_third_party").notNull().default(false),
+    checkbox_legal_policies: boolean("checkbox_legal_policies").notNull().default(false),
+    checkbox_esign: boolean("checkbox_esign").notNull().default(false),
+    business_needs: text("business_needs"),
+    number_of_users: text("number_of_users"),
+    // Optional Supabase Auth linkage (server-set only)
+    auth_user_id: text("auth_user_id"),
+    created_at: timestamp("created_at", { withTimezone: true }).defaultNow(),
+    updated_at: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+  },
+  (table) => [
+    pgPolicy("customer_agreements_select_own", {
+      as: "permissive",
+      for: "select",
+      to: "authenticated",
+      using: sql`${table.auth_user_id} is not null and ${table.auth_user_id} = (select auth.uid()::text)`,
+    }),
+    pgPolicy("customer_agreements_select_staff", {
+      as: "permissive",
+      for: "select",
+      to: "authenticated",
+      using: sql`is_staff(ARRAY['admin','support','read_only'])`,
+    }),
+    // No anon SELECT — public API must use service role + access_token check.
+  ],
+);
 
 export const cookie_consents = pgTable("cookie_consents", {
   id: serial("id").primaryKey(),
@@ -269,12 +465,24 @@ export const cookie_consents = pgTable("cookie_consents", {
   created_at: timestamp("created_at", { withTimezone: true }).defaultNow(),
   updated_at: timestamp("updated_at", { withTimezone: true }).defaultNow(),
 });
+// No client policies — service_role only (banner posts through /api).
 
 // Optional business legal settings (placeholders for missing address/phone/etc.)
-export const legal_settings = pgTable("legal_settings", {
-  id: serial("id").primaryKey(),
-  setting_key: text("setting_key").notNull().unique(),
-  setting_value: text("setting_value"),
-  is_placeholder: boolean("is_placeholder").notNull().default(true),
-  updated_at: timestamp("updated_at", { withTimezone: true }).defaultNow(),
-});
+export const legal_settings = pgTable(
+  "legal_settings",
+  {
+    id: serial("id").primaryKey(),
+    setting_key: text("setting_key").notNull().unique(),
+    setting_value: text("setting_value"),
+    is_placeholder: boolean("is_placeholder").notNull().default(true),
+    updated_at: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+  },
+  () => [
+    pgPolicy("legal_settings_select_staff", {
+      as: "permissive",
+      for: "select",
+      to: "authenticated",
+      using: sql`is_staff(ARRAY['admin'])`,
+    }),
+  ],
+);
