@@ -1,18 +1,24 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
+  BadgeDollarSign,
   Bot,
+  Building2,
   Check,
   ChevronDown,
+  ClipboardCheck,
   Copy,
   CreditCard,
+  FileCheck2,
   Globe,
+  ListOrdered,
   Mail,
   Menu,
   Moon,
   ShieldCheck,
   Sparkles,
   Sun,
+  Users,
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -963,6 +969,81 @@ export default function App() {
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+
+        <section id="why-aon-stack" className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
+          <div className="mb-10 max-w-2xl">
+            <Badge className="mb-4">Why Aon Stack</Badge>
+            <h2 className="font-serif text-4xl font-black tracking-tight sm:text-5xl">Why Choose Aon Stack?</h2>
+            <p className="mt-4 text-muted-foreground leading-8">
+              Professional setup, clear expectations, and human guidance for small-business owners who do not want to
+              manage every technical detail alone.
+            </p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {(
+              [
+                {
+                  icon: Building2,
+                  title: "Built for Small Businesses",
+                  description:
+                    "Our services are structured for business owners who need professional technology without having to manage every technical detail themselves.",
+                },
+                {
+                  icon: BadgeDollarSign,
+                  title: "Transparent Pricing",
+                  description:
+                    "Setup fees, deposits, remaining balances, and separate third-party subscription costs are clearly explained before implementation.",
+                },
+                {
+                  icon: ClipboardCheck,
+                  title: "Clear Scope Before Work Begins",
+                  description:
+                    "You review the project deliverables, estimated timeline, pricing, and applicable agreements before project work begins.",
+                },
+                {
+                  icon: Users,
+                  title: "Human Guidance",
+                  description:
+                    "Receive personal guidance throughout planning, setup, review, and delivery—not just access to another software platform.",
+                },
+                {
+                  icon: FileCheck2,
+                  title: "Approval Before Final Payment",
+                  description:
+                    "The remaining project balance is invoiced after the agreed work has been reviewed and approved, according to the applicable service agreement.",
+                },
+                {
+                  icon: ListOrdered,
+                  title: "Structured Delivery Process",
+                  description:
+                    "Every project follows a defined process for planning, setup, included revision rounds, final payment, delivery, and applicable post-launch support.",
+                },
+              ] as const
+            ).map((item, index) => (
+              <BlurFade key={item.title} delay={0.05 * index}>
+                <Card className="h-full shadow-sm">
+                  <CardContent className="flex h-full flex-col p-6">
+                    <div
+                      className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[hsl(var(--gold))]/12 text-[hsl(var(--gold))]"
+                      aria-hidden="true"
+                    >
+                      <item.icon className="h-5 w-5" />
+                    </div>
+                    <h3 className="font-semibold">{item.title}</h3>
+                    <p className="mt-2 text-sm leading-7 text-muted-foreground">{item.description}</p>
+                  </CardContent>
+                </Card>
+              </BlurFade>
+            ))}
+          </div>
+          <div className="mt-10">
+            <Button size="lg" variant="outline" className="h-12 px-6" asChild>
+              <a href="#services">
+                View Our Services <ArrowRight className="ml-2 h-4 w-4" />
+              </a>
+            </Button>
           </div>
         </section>
 
