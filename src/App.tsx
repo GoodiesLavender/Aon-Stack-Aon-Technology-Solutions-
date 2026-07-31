@@ -973,20 +973,54 @@ export default function App() {
           </div>
           <div className="grid gap-4 md:grid-cols-4">
             {[
-              "Submit setup request",
-              "Pay 50% deposit",
-              "Receive separate software quote",
-              "Approve, then remaining invoice",
+              {
+                title: "Submit Your Request",
+                description:
+                  "Complete the request form with your business information and the services you are interested in. This helps us understand your business needs before we begin.",
+              },
+              {
+                title: "Pay Your Deposit",
+                description:
+                  "Secure your project by paying the required 50% deposit securely through Stripe. Once payment is successful, you will receive an order confirmation email containing your Order No. and the next steps.",
+              },
+              {
+                title: "Business Review",
+                description:
+                  "We carefully review your request, evaluate your business requirements, and determine the most appropriate setup based on your selected package and business goals.",
+              },
+              {
+                title: "Project Planning & Quote",
+                description:
+                  "We prepare your project plan, confirm your service requirements, and, if applicable, provide separate quotes for third-party subscriptions such as Google Workspace or Devs.ai before implementation begins.",
+              },
+              {
+                title: "Scope Approval",
+                description:
+                  "Before work begins, you'll review your project scope, deliverables, pricing, estimated timeline, and applicable legal agreements so everything is clearly understood before implementation.",
+              },
+              {
+                title: "Professional Setup",
+                description:
+                  "We begin configuring and building your selected services, including your website, AI chatbot, business software, integrations, and account setup according to the approved scope of work.",
+              },
+              {
+                title: "Review & Revision",
+                description:
+                  "Review the completed work and submit your included revision request if needed. Corrections to our work are completed at no additional cost. Requests outside the agreed project scope may require a separate quote before additional work begins.",
+              },
+              {
+                title: "Final Payment & Delivery",
+                description:
+                  "After final approval, pay the remaining balance. We then complete your project, provide access to the configured services where applicable, and begin your post-launch support period. Any ownership transfer included in your package will be completed according to your service agreement.",
+              },
             ].map((step, index) => (
-              <Card key={step} className="shadow-sm">
+              <Card key={step.title} className="shadow-sm">
                 <CardContent className="p-6">
                   <div className="mb-5 flex h-10 w-10 items-center justify-center rounded-full bg-primary font-bold text-primary-foreground">
                     {index + 1}
                   </div>
-                  <h3 className="font-semibold">{step}</h3>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    Transparent scope and subscription pricing before the remaining balance is invoiced.
-                  </p>
+                  <h3 className="font-semibold">{step.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground">{step.description}</p>
                 </CardContent>
               </Card>
             ))}
