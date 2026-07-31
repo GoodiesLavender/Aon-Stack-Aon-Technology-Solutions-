@@ -152,7 +152,7 @@ const services: Service[] = [
       "Contact or inquiry form",
       "Basic domain and deployment assistance",
       "Desktop and mobile testing",
-      "One revision round",
+      "Up to Two Revision Rounds Within the Approved Project Scope",
       "Basic client training and handoff",
       "Seven days of post-launch setup support",
     ],
@@ -975,51 +975,64 @@ export default function App() {
             {[
               {
                 title: "Submit Your Request",
+                timeline: null as string | null,
                 description:
-                  "Complete the request form with your business information and the services you are interested in. This helps us understand your business needs before we begin.",
+                  "Complete the request form with your business information and the services you are interested in. This helps us understand your goals and prepare for your project.",
               },
               {
-                title: "Pay Your Deposit",
+                title: "Secure Your Project",
+                timeline: null,
                 description:
-                  "Secure your project by paying the required 50% deposit securely through Stripe. Once payment is successful, you will receive an order confirmation email containing your Order No. and the next steps.",
+                  "Pay the required 50% deposit securely through Stripe to reserve your project. Once payment is successfully received, you will receive an order confirmation email containing your Order No. and information about the next steps.",
               },
               {
-                title: "Business Review",
+                title: "Project Review & Planning",
+                timeline: "Within 2–3 Business Days",
                 description:
-                  "We carefully review your request, evaluate your business requirements, and determine the most appropriate setup based on your selected package and business goals.",
+                  "We review your request, evaluate your business needs, and prepare the recommended project plan. If additional information or clarification is needed, we will contact you before moving forward.",
               },
               {
-                title: "Project Planning & Quote",
+                title: "Proposal & Approval",
+                timeline: "Proposal Delivered Within 2–3 Business Days After Deposit",
                 description:
-                  "We prepare your project plan, confirm your service requirements, and, if applicable, provide separate quotes for third-party subscriptions such as Google Workspace or Devs.ai before implementation begins.",
+                  "You will receive your project proposal, including the Scope of Work, deliverables, estimated project timeline, and any applicable third-party subscription quotes, such as Google Workspace or Devs.ai. Project work begins only after you review, sign, and approve the required proposal and agreements.",
               },
               {
-                title: "Scope Approval",
+                title: "Professional Setup Begins",
+                timeline: "Within 1 Business Day After Approval",
                 description:
-                  "Before work begins, you'll review your project scope, deliverables, pricing, estimated timeline, and applicable legal agreements so everything is clearly understood before implementation.",
+                  "Once all required approvals and client materials are received, we begin configuring and building your selected services according to the approved Scope of Work.",
               },
               {
-                title: "Professional Setup",
+                title: "Review & Revisions",
+                timeline: "Initial Review Version Typically Delivered Within 7–10 Business Days After Approval",
                 description:
-                  "We begin configuring and building your selected services, including your website, AI chatbot, business software, integrations, and account setup according to the approved scope of work.",
+                  "You will receive the initial completed version of the work for review. The delivery estimate may vary depending on the approved project scope, requested features, third-party services, and how quickly required content or access is provided. Your package includes up to two (2) revision rounds within the approved project scope. For each revision round, please submit all requested changes as one consolidated list. Multiple separate messages submitted before that revision round is completed may be combined and treated as one revision round. Corrections to errors in our work that do not match the approved Scope of Work will be completed at no additional cost and will not count as a revision round. New features, additional pages, replacement content, redesign requests, or other work outside the approved project scope may require a separate quote and written approval before additional work begins.",
               },
               {
-                title: "Review & Revision",
+                title: "Final Approval & Payment",
+                timeline: null,
                 description:
-                  "Review the completed work and submit your included revision request if needed. Corrections to our work are completed at no additional cost. Requests outside the agreed project scope may require a separate quote before additional work begins.",
+                  "After the included revisions are completed, you will review the final version. Once you provide final approval, we will send the final invoice for the remaining project balance. The remaining balance must be paid before final launch, transfer, or delivery.",
               },
               {
-                title: "Final Payment & Delivery",
+                title: "Project Delivery & Support",
+                timeline: null,
                 description:
-                  "After final approval, pay the remaining balance. We then complete your project, provide access to the configured services where applicable, and begin your post-launch support period. Any ownership transfer included in your package will be completed according to your service agreement.",
+                  "After final payment is received, we complete the approved project delivery, provide access to the configured services where applicable, and begin the included post-launch support period. Any website ownership transfer, account handoff, training, or post-launch support will be provided only when included in the selected package or approved Scope of Work.",
               },
             ].map((step, index) => (
-              <Card key={step.title} className="shadow-sm">
-                <CardContent className="p-6">
-                  <div className="mb-5 flex h-10 w-10 items-center justify-center rounded-full bg-primary font-bold text-primary-foreground">
+              <Card key={step.title} className="h-full shadow-sm">
+                <CardContent className="flex h-full flex-col p-6">
+                  <div className="mb-5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary font-bold text-primary-foreground">
                     {index + 1}
                   </div>
                   <h3 className="font-semibold">{step.title}</h3>
+                  {step.timeline && (
+                    <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-[hsl(var(--gold))]">
+                      {step.timeline}
+                    </p>
+                  )}
                   <p className="mt-2 text-sm leading-6 text-muted-foreground">{step.description}</p>
                 </CardContent>
               </Card>
