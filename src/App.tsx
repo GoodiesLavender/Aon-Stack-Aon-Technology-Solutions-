@@ -729,20 +729,22 @@ export default function App() {
           </div>
         </section>
 
-        <section className="mx-auto max-w-7xl px-5 pb-10 lg:px-8">
+        <section className="mx-auto max-w-7xl px-5 pb-10 lg:px-8" aria-label="Business statistics">
           <div className="grid overflow-hidden rounded-2xl border border-border bg-card shadow-sm md:grid-cols-4">
-            {[
-              { n: 2, l: "Focused setup services" },
-              { n: 50, l: "Percent deposit today" },
-              { n: 899, l: "Website package setup fee" },
-              { n: 0, l: "Automatic remaining charges" },
-            ].map((stat) => (
+            {(
+              [
+                { n: 2, l: "Focused Setup Services", prefix: "", suffix: "" },
+                { n: 50, l: "Percent Deposit Today", prefix: "", suffix: "%" },
+                { n: 899, l: "Website Package Setup Fee", prefix: "$", suffix: "" },
+                { n: 0, l: "Automatic Remaining Charges", prefix: "", suffix: "" },
+              ] as const
+            ).map((stat) => (
               <div
                 key={stat.l}
                 className="border-b border-border p-6 text-center last:border-b-0 md:border-b-0 md:border-r md:last:border-r-0"
               >
                 <div className="font-serif text-4xl font-black">
-                  <NumberTicker value={stat.n} />
+                  <NumberTicker value={stat.n} prefix={stat.prefix} suffix={stat.suffix} />
                 </div>
                 <div className="mt-1 text-xs font-bold uppercase tracking-wider text-muted-foreground">{stat.l}</div>
               </div>
