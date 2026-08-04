@@ -77,19 +77,24 @@ export const purchase_id_counters = pgTable("purchase_id_counters", {
 // No client policies — service_role only.
 
 // Atomic next-id helper installed via Push to Supabase.
+// searchPath is required by Supabase Security Advisor (function_search_path_mutable).
 export const next_purchase_id = pgFunction("next_purchase_id", {
   args: "",
   returns: "text",
   language: "plpgsql",
+  searchPath: "public",
   body: `
     DECLARE
       y text := to_char((NOW() AT TIME ZONE 'UTC'), 'YYYY');
       n integer;
     BEGIN
-      INSERT INTO purchase_id_counters (year, last_seq, updated_at)
+      -- Pin search_path for the duration of this call (defense in depth).
+      PERFORM set_config('search_path', 'public', true);
+
+      INSERT INTO public.purchase_id_counters (year, last_seq, updated_at)
       VALUES (y, 1, NOW())
       ON CONFLICT (year) DO UPDATE
-        SET last_seq = purchase_id_counters.last_seq + 1,
+        SET last_seq = public.purchase_id_counters.last_seq + 1,
             updated_at = NOW()
       RETURNING last_seq INTO n;
       RETURN 'AON-' || y || '-' || lpad(n::text, 6, '0');
@@ -285,14 +290,16 @@ export const admin_profiles = pgTable(
 );
 
 // Staff check used by policies (SECURITY INVOKER — runs as caller).
+// searchPath pins resolution so a caller-controlled path cannot redirect admin_profiles.
 export const is_staff = pgFunction("is_staff", {
   args: "allowed_roles text[] DEFAULT ARRAY['admin','support','read_only']",
   returns: "boolean",
   language: "sql",
+  searchPath: "public",
   body: `
     SELECT EXISTS (
       SELECT 1
-      FROM admin_profiles ap
+      FROM public.admin_profiles ap
       WHERE ap.user_id = (SELECT auth.uid()::text)
         AND ap.is_active = true
         AND ap.role = ANY (allowed_roles)
@@ -356,19 +363,24 @@ export const agreement_id_counters = pgTable("agreement_id_counters", {
 });
 // No client policies — service_role only.
 
+// searchPath is required by Supabase Security Advisor (function_search_path_mutable).
 export const next_agreement_id = pgFunction("next_agreement_id", {
   args: "",
   returns: "text",
   language: "plpgsql",
+  searchPath: "public",
   body: `
     DECLARE
       y text := to_char((NOW() AT TIME ZONE 'UTC'), 'YYYY');
       n integer;
     BEGIN
-      INSERT INTO agreement_id_counters (year, last_seq, updated_at)
+      -- Pin search_path for the duration of this call (defense in depth).
+      PERFORM set_config('search_path', 'public', true);
+
+      INSERT INTO public.agreement_id_counters (year, last_seq, updated_at)
       VALUES (y, 1, NOW())
       ON CONFLICT (year) DO UPDATE
-        SET last_seq = agreement_id_counters.last_seq + 1,
+        SET last_seq = public.agreement_id_counters.last_seq + 1,
             updated_at = NOW()
       RETURNING last_seq INTO n;
       RETURN 'AGR-' || y || '-' || lpad(n::text, 6, '0');

@@ -1,13 +1,8 @@
 // @appbuilder-pg-function-v1 -- auto-injected by deploy pipeline.
-// Do not edit by hand; the pipeline replaces this file on the next deploy.
-//
-// Declare Postgres functions that the platform will install on the
-// next "Push to Supabase" (the same flow that creates tables from
-// pgTable). The platform enforces SECURITY INVOKER at install time
-// -- no SECURITY DEFINER escalation -- and does not emit GRANT
-// EXECUTE for anon/authenticated. Call the installed function from
-// an api/*.ts route via:
-//   const { data, error } = await supabaseAdmin.rpc("function_name", { ...args });
+// Extended locally with optional `searchPath` so CREATE FUNCTION can emit
+// `SET search_path TO ...` and clear Supabase Security Advisor lint
+// "function_search_path_mutable". Safe to keep if the pipeline rewrites
+// this file — schema.ts still passes searchPath on each pgFunction call.
 
 export type PgFunctionLanguage = "plpgsql" | "sql";
 
@@ -20,6 +15,12 @@ export interface PgFunctionDef {
   language?: PgFunctionLanguage;
   /** Function body. For plpgsql: the inner BEGIN ... END; block. For sql: the inner statement(s). */
   body: string;
+  /**
+   * Explicit search_path for the function (Supabase Security Advisor).
+   * Emitted as: SET search_path TO <value>
+   * Use "public" for ordinary app functions that touch public.* tables.
+   */
+  searchPath?: string;
 }
 
 export interface PgFunctionMarker extends PgFunctionDef {
@@ -36,5 +37,6 @@ export function pgFunction(name: string, def: PgFunctionDef): PgFunctionMarker {
     returns: def.returns,
     language: def.language ?? "plpgsql",
     body: def.body,
+    ...(def.searchPath ? { searchPath: def.searchPath } : {}),
   };
 }
